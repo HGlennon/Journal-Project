@@ -1,8 +1,8 @@
-export default function About() {
+export default function Upcoming() {
   return (
     <div>
-      <h1>About</h1>
-      <p>This is the about page of our application.</p>
+      <h1>Upcoming</h1>
+      <p>This is the Upcoming page of our application.</p>
     </div>
   );
 }
