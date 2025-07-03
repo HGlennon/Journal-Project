@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { LayoutDashboard, BarChart3, UserCircle, Boxes, Package, Receipt, Settings, LifeBuoy } from "lucide-react";
+import { LayoutDashboard, BarChart3, UserCircle } from "lucide-react";
 import Sidebar, { SidebarItem } from '@/components/sidebar';
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
