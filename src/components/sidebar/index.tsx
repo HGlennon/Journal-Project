@@ -36,7 +36,7 @@ export default function Sidebar({ children }: SidebarProps) {
   />
   {expanded && (
     <div className="flex items-center gap-2 whitespace-nowrap overflow-hidden">
-      <h4 className="font-semibold truncate">John Doe</h4>
+      <h4 className="font-semibold truncate">Harrison Glennon</h4>
       <MoreVertical size={14} />
     </div>
   )}
