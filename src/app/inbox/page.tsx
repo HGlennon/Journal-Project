@@ -1,8 +1,10 @@
 export default function Inbox() {
   return (
     <div>
-      <h1>Inbox</h1>
-      <p>This is the inbox page of our application.</p>
+      <h1 className="text-3xl font-bold text-center mt-20">
+        Inbox
+      </h1>
+
     </div>
   );
 }

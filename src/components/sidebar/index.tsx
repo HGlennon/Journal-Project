@@ -26,21 +26,21 @@ export default function Sidebar({ children }: SidebarProps) {
 
   return (
     <aside className="h-screen">
-      <nav className="h-full flex flex-col bg-white border-r border-indigo-500 shadow-sm">
+      <nav className="h-full flex flex-col bg-gray-400 border-r border-gray-400 shadow-sm">
         <div className="p-4 pb-2 flex justify-between items-center">
-<div className="flex items-center space-x-3 px-3 py-2 hover:bg-indigo-100 rounded-md cursor-pointer">
-  <img
-    src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
-    alt="User Avatar"
-    className="w-8 h-8 rounded-md"
-  />
-  {expanded && (
-    <div className="flex items-center gap-2 whitespace-nowrap overflow-hidden">
-      <h4 className="font-semibold truncate">Harrison Glennon</h4>
-      <MoreVertical size={14} />
-    </div>
-  )}
-</div>
+          <div className="flex items-center space-x-3 px-3 py-2 hover:bg-indigo-100 rounded-md cursor-pointer">
+            <img
+              src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
+              alt="User Avatar"
+              className="w-8 h-8 rounded-md"
+            />
+            {expanded && (
+              <div className="flex items-center gap-2 whitespace-nowrap overflow-hidden">
+                <h4 className="font-semibold truncate">Harrison Glennon</h4>
+                <MoreVertical size={14} />
+              </div>
+            )}
+          </div>
           <button
             aria-label="Toggle sidebar"
             aria-expanded={expanded}
@@ -76,15 +76,13 @@ export function SidebarItem({ icon, text, active, alert }: SidebarItemProps) {
       <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 text-indigo-600">
         {icon}
       </div>
-<span
-  className={`overflow-hidden transition-all duration-300 ease-in-out text-nowrap ${
-    expanded ? 'w-52 ml-3' : 'w-0 ml-0'
-  }`}
->
-  {text}
-</span>
-
-
+      <span
+        className={`overflow-hidden transition-all duration-300 ease-in-out text-nowrap ${
+          expanded ? 'w-52 ml-3' : 'w-0 ml-0'
+        }`}
+      >
+        {text}
+      </span>
       {alert && (
         <div
           className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${

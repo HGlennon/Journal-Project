@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, BarChart3, UserCircle } from "lucide-react";
 import { FaEnvelope, FaCalendarDays } from "react-icons/fa6";
 import { SiTicktick } from "react-icons/si";
-import { MdCalendarToday } from "react-icons/md";
+import { FaPlusCircle } from "react-icons/fa";
 import { SidebarItem } from "@/components/sidebar";
 import CalendarDateIcon from "./calendar-icon";
 
@@ -14,7 +13,7 @@ export default function SidebarNavigation() {
 
   return (
     <>
-      <SidebarItem icon={<LayoutDashboard size={20} />} text="Add task" active={pathname === "/"} />
+      <SidebarItem icon={<FaPlusCircle size={20} className={pathname === "/add_task" ? "text-blue-600" : "text-gray-600"}/>} text="Add task" active={pathname === "/"} />
       
       <Link 
         href="/inbox" 
@@ -22,7 +21,7 @@ export default function SidebarNavigation() {
         data-tooltip-id="Inbox"
         data-tooltip-content="Inbox"
       >
-        <SidebarItem icon={<FaEnvelope size={20} />} text="Inbox" active={pathname === "/inbox"} />
+        <SidebarItem icon={<FaEnvelope size={20} className={pathname === "/inbox" ? "text-blue-600" : "text-gray-600"}/>} text="Inbox" active={pathname === "/inbox"} />
       </Link>
       
       <Link 
@@ -40,7 +39,7 @@ export default function SidebarNavigation() {
         data-tooltip-id="Upcoming"
         data-tooltip-content="Upcoming"
       >
-        <SidebarItem icon={<FaCalendarDays size={20} />} text="Upcoming" active={pathname === "/upcoming"} />
+        <SidebarItem icon={<FaCalendarDays size={20} className={pathname === "/upcoming" ? "text-blue-600" : "text-gray-600"}/>} text="Upcoming" active={pathname === "/upcoming"} />
       </Link>
       
       <Link 
@@ -49,7 +48,7 @@ export default function SidebarNavigation() {
         data-tooltip-id="Completed"
         data-tooltip-content="Completed"
       >
-        <SidebarItem icon={<SiTicktick size={20} />} text="Completed" active={pathname === "/completed"} />
+        <SidebarItem icon={<SiTicktick size={20} className={pathname === "/completed" ? "text-blue-600" : "text-gray-600"}/>} text="Completed" active={pathname === "/completed"} />
       </Link>
     </>
   );
