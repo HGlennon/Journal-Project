@@ -12,9 +12,7 @@ export default function SidebarNavigation() {
   const pathname = usePathname();
 
   return (
-    <>
-      <SidebarItem icon={<FaPlusCircle size={20} className={pathname === "/add_task" ? "text-blue-600" : "text-gray-600"}/>} text="Add task" active={pathname === "/"} />
-      
+    <>      
       <Link 
         href="/inbox" 
         aria-label="Inbox"
