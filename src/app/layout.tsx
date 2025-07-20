@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Sidebar from '@/components/sidebar';
-import SidebarNavigation from '@/app/sidebar-navigation'; // ← Import the client component
+import SidebarNavigation from '@/app/sidebar-navigation';
 import "./main.css";
+import SessionWrapper from '@/components/SessionWrapper';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,16 +24,18 @@ export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
-}){
+}) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="flex">
-          <Sidebar>
-            <SidebarNavigation /> {/* Use the client component */}
-          </Sidebar>
-          <main className="flex-1">{children}</main>
-        </div>
+        <SessionWrapper>
+          <div className="flex">
+            <Sidebar>
+              <SidebarNavigation />
+            </Sidebar>
+            <main className="flex-1">{children}</main>
+          </div>
+        </SessionWrapper>
       </body>
     </html>
   );
