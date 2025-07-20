@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaEnvelope, FaCalendarDays } from "react-icons/fa6";
 import { SiTicktick } from "react-icons/si";
-import { FaPlusCircle } from "react-icons/fa";
 import { SidebarItem } from "@/components/sidebar";
 import CalendarDateIcon from "./calendar-icon";
 
