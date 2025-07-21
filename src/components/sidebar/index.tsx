@@ -3,6 +3,7 @@
 import { ReactNode, useState, createContext, useContext } from 'react';
 import { Tooltip } from 'react-tooltip'
 import { ChevronFirst, ChevronLast, MoreVertical } from 'lucide-react';
+import Image from 'next/image';
 
 interface SidebarItemProps {
   icon: ReactNode;
@@ -29,10 +30,13 @@ export default function Sidebar({ children }: SidebarProps) {
       <nav className="h-full flex flex-col bg-gray-400 border-r border-gray-400 shadow-sm">
         <div className="p-4 pb-2 flex justify-between items-center">
           <div className="flex items-center space-x-3 px-3 py-2 hover:bg-indigo-100 rounded-md cursor-pointer">
-            <img
+            <Image
               src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
               alt="User Avatar"
-              className="w-8 h-8 rounded-md"
+              width={32}
+              height={32}
+              className="rounded-md"
+              unoptimized
             />
             {expanded && (
               <div className="flex items-center gap-2 whitespace-nowrap overflow-hidden">
