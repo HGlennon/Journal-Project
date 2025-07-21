@@ -1,17 +1,26 @@
-export default function Completed() {
-  return (
-    <div>
-      <h1 className="text-3xl font-bold mt-10 ml-70 px-4 py-8">
-        Completed
-      </h1>
-      <div className="container mx-auto px-4 py-8 text-center mt-20">
-        <h2 className="text-2xl font-semibold mb-4">
-          Add now, schedule later.
-        </h2>
-        <p>
-          From the inbox, you can quickly record tasks, and then schedule them later into specific dates.
-        </p>
-      </div>
-    </div>
-  );
+
+import { db } from '@/db';
+import { tasksTable } from '@/db/schema';
+import { and, eq, desc } from 'drizzle-orm';
+import { CompletedClient } from './CompletedClient';
+import { getCurrentUserId } from '@/app/lib/auth';
+
+export default async function Completed() {
+  const userId = await getCurrentUserId();
+  if (!userId) {
+    return <div>Please log in to view completed tasks.</div>;
+  }
+
+  const completedTasks = await db
+    .select()
+    .from(tasksTable)
+    .where(
+      and(
+        eq(tasksTable.userId, Number(userId)),
+        eq(tasksTable.completed, 1)
+      )
+    )
+    .orderBy(desc(tasksTable.id));
+
+  return <CompletedClient initialCompletedTasks={completedTasks} />;
 }

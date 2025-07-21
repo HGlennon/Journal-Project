@@ -29,6 +29,7 @@ export const tasksTable = sqliteTable('tasks', {
   dueDate: text('due_date').notNull(),
   userId: integer('user_id')
     .references(() => usersTable.id, { onDelete: 'set null' }),
+  completed: integer('completed').notNull().default(0), // 0 = false, 1 = true
   createdAt: text('created_at')
     .default(sql`(CURRENT_TIMESTAMP)`)
     .notNull(),

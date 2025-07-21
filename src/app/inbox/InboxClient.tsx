@@ -49,27 +49,26 @@ export function InboxClient({ initialTasks }: Props) {
     }
   }
 
-  function handleComplete(taskId: number) {
-    startTransition(async () => {
-      try {
-        const formData = new FormData();
-        formData.append('taskId', String(taskId));
-        await completeTask(formData);
-        setTasks(prev => {
-          const newTasks = prev.filter(t => t.id !== taskId);
-          // Show empty state if no tasks left
-          if (newTasks.length === 0) setShowForm(false);
-          return newTasks;
-        });
-      } catch (error) {
-        console.error('Error completing task:', error);
-      }
-    });
-  }
+function handleComplete(taskId: number) {
+  startTransition(async () => {
+    try {
+      const formData = new FormData();
+      formData.append('taskId', String(taskId));
+      await completeTask(formData);
+      setTasks(prev => {
+        const newTasks = prev.filter(t => t.id !== taskId);
+        if (newTasks.length === 0) setShowForm(false);
+        return newTasks;
+      });
+    } catch (error) {
+      console.error('Error completing task:', error);
+    }
+  });
+}
 
   return (
     <div>
-      <h1 className="text-4xl font-bold mt-10 ml-70 px-4 py-8">
+      <h1 className="text-3xl font-bold mt-10 ml-70 px-4 py-8">
         Inbox
       </h1>
 
@@ -91,26 +90,29 @@ export function InboxClient({ initialTasks }: Props) {
         </div>
       )}
 
-      {/* Tasks List and Form */}
       {(tasks.length > 0 || showForm) && (
         <div className="mt-10 space-y-4 max-w-md mx-auto ml-74">
-          {/* Render tasks if they exist */}
           {tasks.map((task) => (
             <div
               key={task.id}
-              className="border p-2 rounded flex justify-between items-center"
+              className="border p-2 rounded flex items-center justify-between"
             >
-              <div>
+              {/* Circle button with hover-tick */}
+              <button
+                onClick={() => handleComplete(task.id)}
+                className="w-8 h-8 border-2 border-green-500 rounded-full flex items-center justify-center group hover:bg-green-100 disabled:opacity-50"
+                disabled={isPending}
+              >
+                <span className="text-green-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  ✓
+                </span>
+              </button>
+
+              {/* Task content */}
+              <div className="ml-4 flex-1">
                 <div className="font-medium">{task.task}</div>
                 <div className="text-sm text-gray-500">Due: {task.dueDate}</div>
               </div>
-              <button
-                onClick={() => handleComplete(task.id)}
-                className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-                disabled={isPending}
-              >
-                Complete
-              </button>
             </div>
           ))}
 
