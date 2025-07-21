@@ -19,12 +19,12 @@ interface SidebarProps {
 interface SidebarContextType {
   expanded: boolean;
 }
-
+// lol
 const SidebarContext = createContext<SidebarContextType>({ expanded: false });
 
 export default function Sidebar({ children }: SidebarProps) {
   const [expanded, setExpanded] = useState(true);
-
+  
   return (
     <aside className="h-screen">
       <nav className="h-full flex flex-col bg-gray-400 border-r border-gray-400 shadow-sm">
