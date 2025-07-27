@@ -4,7 +4,6 @@ import { useState, useTransition } from 'react';
 import type { InferSelectModel } from 'drizzle-orm';
 import { tasksTable } from '@/db/schema';
 import { undoCompleteTask } from '@/db/actions/undoCompleteTask';
-import { useSession } from 'next-auth/react';
 
 type Task = InferSelectModel<typeof tasksTable>;
 
@@ -13,7 +12,6 @@ interface Props {
 }
 
 export function CompletedClient({ initialCompletedTasks }: Props) {
-  const { data: session } = useSession();
   const [tasks, setTasks] = useState<Task[]>(initialCompletedTasks);
   const [isPending, startTransition] = useTransition();
 
