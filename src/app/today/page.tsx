@@ -1,17 +1,27 @@
-export default function Today() {
-  return (
-    <div>
-      <h1 className="text-4xl font-bold mt-10 ml-70 px-4 py-8">
-        Today
-      </h1>
-      <div className="container mx-auto px-4 py-8 text-center mt-20">
-        <h2 className="text-2xl font-semibold mb-4">
-          Add now, schedule later.
-        </h2>
-        <p>
-          From the inbox, you can quickly record tasks, and then schedule them later into specific dates.
-        </p>
-      </div>
-    </div>
-  );
+import { db } from '@/db';
+import { tasksTable } from '@/db/schema';
+import { eq, and } from 'drizzle-orm';
+import { TodayClient } from './TodayClient';
+import { getCurrentUserId } from '@/app/lib/auth';
+
+export const dynamic = 'force-dynamic';
+
+export default async function TodayPage() {
+  const userId = await getCurrentUserId();
+  if (!userId) return <div>Please log in to view today’s tasks.</div>;
+
+  const today = new Date().toLocaleDateString('en-CA'); // 'YYYY-MM-DD'
+
+  const tasksDueToday = await db
+    .select()
+    .from(tasksTable)
+    .where(
+      and(
+        eq(tasksTable.userId, userId),
+        eq(tasksTable.completed, 0),
+        eq(tasksTable.dueDate, today)
+      )
+    );
+
+  return <TodayClient initialTasks={tasksDueToday} />;
 }

@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import type { InferSelectModel } from 'drizzle-orm';
 import { tasksTable } from '@/db/schema';
-import { undoCompleteTask } from '@/db/actions/undo-complete-task';
+import { undoCompleteTask } from '@/db/actions/undoCompleteTask';
 import { useSession } from 'next-auth/react';
 
 type Task = InferSelectModel<typeof tasksTable>;
@@ -31,21 +31,21 @@ export function CompletedClient({ initialCompletedTasks }: Props) {
   }
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mt-10 ml-70 px-4 py-8">
+    <div className="px-4 py-8">
+      <h1 className="text-3xl font-bold ml-64">
         Completed
       </h1>
 
       {/* Empty state */}
       {tasks.length === 0 ? (
-        <div className="container mx-auto px-4 py-8 text-center mt-20">
+        <div className="mx-auto max-w-md text-center mt-48">
           <h2 className="text-2xl font-semibold mb-4">
-            You're all caught up!
+            Its quiet here...
           </h2>
-          <p className="text-gray-500">No completed tasks for now.</p>
+          <p className="text-gray-500">Complete some tasks to start populating this page!.</p>
         </div>
       ) : (
-        <div className="mt-10 space-y-4 max-w-md mx-auto ml-74">
+        <div className="mt-12 space-y-4 max-w-md mx-auto ml-64">
           {tasks.map((task) => (
             <div
               key={task.id}

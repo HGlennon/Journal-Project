@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { FaEnvelope, FaCalendarDays } from "react-icons/fa6";
 import { SiTicktick } from "react-icons/si";
 import { SidebarItem } from "@/components/sidebar";
-import CalendarDateIcon from "./calendar-icon";
+import CalendarDateIcon from "./CalendarIcon";
 
 export default function SidebarNavigation() {
   const pathname = usePathname();

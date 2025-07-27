@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth';
-import { authOptions } from './auth-options';
+import { authOptions } from './authOptions';
 
 export async function getCurrentUserId(): Promise<number | null> {
   const session = await getServerSession(authOptions);

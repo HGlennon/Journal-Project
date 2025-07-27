@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Sidebar from '@/components/sidebar';
-import SidebarNavigation from '@/app/sidebar-navigation';
+import SidebarNavigation from '@/app/SidebarNavigation';
 import "./main.css";
 import SessionWrapper from '@/components/SessionWrapper';
 
@@ -29,11 +29,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionWrapper>
-          <div className="flex">
+          <div className="flex h-screen w-full">
             <Sidebar>
               <SidebarNavigation />
             </Sidebar>
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 overflow-auto px-4 py-8 bg-white">
+              {children}
+            </main>
           </div>
         </SessionWrapper>
       </body>

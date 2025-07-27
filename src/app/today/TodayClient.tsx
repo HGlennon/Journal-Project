@@ -13,8 +13,8 @@ interface Props {
   initialTasks: Task[];
 }
 
-export function InboxClient({ initialTasks }: Props) {
-  const { data: session, status } = useSession();
+export function TodayClient({ initialTasks }: Props) {
+  const { data: session } = useSession();
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [isPending, startTransition] = useTransition();
   const [showForm, setShowForm] = useState(false);
@@ -39,7 +39,13 @@ export function InboxClient({ initialTasks }: Props) {
         const newTask = await addTask(formData);
         if (!newTask) throw new Error('Failed to add task');
 
-        setTasks(prev => [newTask, ...prev]);
+        const today = new Date().toLocaleDateString('en-CA'); // 'YYYY-MM-DD'
+
+        // ✅ Only show task if dueDate matches today
+        if (newTask.dueDate === today) {
+          setTasks(prev => [newTask, ...prev]);
+        }
+
         form.reset();
         setShowForm(true);
       });
@@ -65,28 +71,21 @@ export function InboxClient({ initialTasks }: Props) {
     });
   }
 
-
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div className="px-4 py-8 transition-all max-w-4xl mx-auto lg:ml-64">
-      <h1 className="text-3xl font-bold">
-        Inbox
+    <div className="px-4 py-8">
+      <h1 className="text-3xl font-bold ml-10">
+        Today
       </h1>
 
       {tasks.length === 0 && !showForm && (
-        <div className="mx-auto max-w-md text-center mt-48">
+        <div className="mx-auto max-w-md text-center mt-45 ml-74">
           <h2 className="text-2xl font-semibold mb-4">
-            Add now, schedule later.
+            No tasks for today yet
           </h2>
-          <p>
-            From the inbox, you can quickly record tasks, and then schedule them later into specific dates.
-          </p>
+          <p>You can schedule tasks for today below.</p>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-gray-400 text-white px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors duration-200 mt-4"
+            className="bg-gray-400 text-white px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors duration-200 mt-4 cursor-pointer"
           >
             Add task
           </button>
@@ -94,11 +93,11 @@ export function InboxClient({ initialTasks }: Props) {
       )}
 
       {(tasks.length > 0 || showForm) && (
-        <div className="mt-12 space-y-4 max-w-md mx-auto lg:ml-0">
+        <div className="mt-10 space-y-4 max-w-md mx-auto ml-10">
           {tasks.map((task) => (
             <div
               key={task.id}
-              className="border p-3 rounded flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 w-full"
+              className="border p-2 rounded flex items-center justify-between"
             >
               <button
                 onClick={() => handleComplete(task.id)}
@@ -110,16 +109,16 @@ export function InboxClient({ initialTasks }: Props) {
                 </span>
               </button>
 
-              <div className="flex-1">
+              <div className="ml-4 flex-1">
                 <div className="font-medium">{task.task}</div>
                 <div className="text-sm text-gray-500">Due: {task.dueDate}</div>
               </div>
             </div>
           ))}
 
-          <form
+          <form 
             ref={formRef}
-            onSubmit={handleAddTask}
+            onSubmit={handleAddTask} 
             className="space-y-2 mt-6"
           >
             <input
@@ -127,25 +126,26 @@ export function InboxClient({ initialTasks }: Props) {
               type="text"
               required
               placeholder="Task name"
-              className="border p-2 w-full text-sm"
+              className="border p-2 w-full"
             />
             <input
               name="dueDate"
               type="date"
               required
-              className="border p-2 w-full text-sm cursor-text"
+              className="border p-2 w-full cursor-text"
+              defaultValue={new Date().toISOString().split('T')[0]} // today's date
             />
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex gap-2">
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
                 disabled={isPending}
               >
                 {isPending ? 'Adding...' : 'Add Task'}
               </button>
               <button
                 type="button"
-                className="bg-gray-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+                className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer"
                 disabled={isPending}
                 onClick={() => setShowForm(false)}
               >
