@@ -6,6 +6,7 @@ import { ChevronFirst, ChevronLast, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
+import { useRef } from 'react';
 
 
 interface SidebarItemProps {
@@ -31,6 +32,7 @@ export default function Sidebar({ children }: SidebarProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { data: session } = useSession();
   const name = session?.user?.name;
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
 
   useEffect(() => {
@@ -47,9 +49,31 @@ export default function Sidebar({ children }: SidebarProps) {
 
   const toggleSidebar = () => setExpanded(prev => !prev);
 
+  useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setDropdownOpen(false);
+    }
+  };
+
+  if (dropdownOpen) {
+    document.addEventListener('mousedown', handleClickOutside);
+  } else {
+    document.removeEventListener('mousedown', handleClickOutside);
+  }
+
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+  }, [dropdownOpen]);
+
   const sidebarContent = (
     <nav className="h-full flex flex-col bg-gray-400 border-r border-gray-400 shadow-sm">
-      <div className="p-4 pb-2 flex justify-between items-center">
+      <div ref={dropdownRef} className="relative p-4 pb-2 flex justify-between items-center">
+      
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
           className="flex items-center space-x-3 px-3 py-2 hover:bg-indigo-100 rounded-md cursor-pointer"

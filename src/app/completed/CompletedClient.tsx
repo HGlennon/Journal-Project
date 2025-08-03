@@ -29,8 +29,8 @@ export function CompletedClient({ initialCompletedTasks }: Props) {
   }
 
   return (
-    <div className="px-4 py-8">
-      <h1 className="text-3xl font-bold ml-64">
+    <div className="px-4 py-8 transition-all max-w-4xl mx-auto lg:ml-64">
+      <h1 className="text-3xl font-bold">
         Completed
       </h1>
 
@@ -43,11 +43,11 @@ export function CompletedClient({ initialCompletedTasks }: Props) {
           <p className="text-gray-500">Complete some tasks to start populating this page!.</p>
         </div>
       ) : (
-        <div className="mt-12 space-y-4 max-w-md mx-auto ml-64">
+        <div className="mt-12 space-y-4 max-w-md mx-auto lg:ml-0">
           {tasks.map((task) => (
             <div
               key={task.id}
-              className="border p-2 rounded flex items-center justify-between"
+              className="border p-3 rounded flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 w-full"
             >
               {/* Already ticked circle - fades on hover */}
               <button
@@ -61,7 +61,7 @@ export function CompletedClient({ initialCompletedTasks }: Props) {
               </button>
 
               {/* Task content */}
-              <div className="ml-4 flex-1">
+              <div className="flex-1">
                 <div className="font-medium text-gray-500">
                   {task.task}
                 </div>
