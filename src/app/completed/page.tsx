@@ -4,12 +4,12 @@ import { tasksTable } from '@/db/schema';
 import { and, eq, desc } from 'drizzle-orm';
 import { CompletedClient } from './CompletedClient';
 import { getCurrentUserId } from '@/app/lib/auth';
+import { redirect } from 'next/navigation';
 
 export default async function Completed() {
   const userId = await getCurrentUserId();
-  if (!userId) {
-    return <div>Please log in to view completed tasks.</div>;
-  }
+  if (!userId) redirect('/login'); 
+
 
   const completedTasks = await db
     .select()

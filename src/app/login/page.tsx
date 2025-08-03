@@ -7,6 +7,7 @@ import { signIn } from 'next-auth/react';
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -64,16 +65,23 @@ export default function AuthPage() {
   return (
     <div>
       <div style={{ marginBottom: 20 }}>
-        <button onClick={() => setIsLogin(false)} disabled={!isLogin}>
-          Register
-        </button>
         <button onClick={() => setIsLogin(true)} disabled={isLogin}>
-          Login
+          LoginButton
+        </button>
+        <button onClick={() => setIsLogin(false)} disabled={!isLogin} className='ml-2'>
+          RegisterButton 
         </button>
       </div>
 
       {!isLogin ? (
         <form onSubmit={handleRegister}>
+          <input
+            type="text"
+            placeholder="Username"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
           <input
             type="email"
             placeholder="Email"

@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 
 export async function POST(req: Request) {
   try {
-    const { email, password } = await req.json();
+    const { email, password, name } = await req.json(); // ✅ include name
 
     if (!email || !password) {
       return NextResponse.json({ message: 'Email and password are required' }, { status: 400 });
@@ -25,7 +25,12 @@ export async function POST(req: Request) {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-  await db.insert(usersTable).values({ email, password: passwordHash, name: 'default', age: 18 });
+    await db.insert(usersTable).values({
+      email,
+      password: passwordHash,
+      name,           // ✅ use actual name from request
+      age: 18,        // default age (optional)
+    });
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {

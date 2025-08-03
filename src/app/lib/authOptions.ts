@@ -29,7 +29,7 @@ export const authOptions: AuthOptions = {
         const valid = await bcrypt.compare(credentials.password, user.password);
         if (!valid) return null;
 
-        return { id: String(user.id), email: user.email };
+        return { id: String(user.id), email: user.email, name: user.name}
       },
     }),
   ],
@@ -41,13 +41,21 @@ export const authOptions: AuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: User }) {
-      if (user) token.id = user.id;
+      if (user) {
+        token.id = user.id;
+        token.name = user.name; // ✅ Store name in token
+      }
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       if (token?.id) {
         session.user.id = token.id as string;
       }
+
+      if (token?.name) {
+        session.user.name = token.name; // ✅ Set name in session
+      }
+
       return session;
     },
   },

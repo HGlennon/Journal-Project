@@ -72,13 +72,13 @@ export function TodayClient({ initialTasks }: Props) {
   }
 
   return (
-    <div className="px-4 py-8">
-      <h1 className="text-3xl font-bold ml-10">
+    <div className="px-4 py-8 transition-all max-w-4xl mx-auto lg:ml-64">
+      <h1 className="text-3xl font-bold">
         Today
       </h1>
 
       {tasks.length === 0 && !showForm && (
-        <div className="mx-auto max-w-md text-center mt-45 ml-74">
+        <div className="mx-auto max-w-md text-center mt-48">
           <h2 className="text-2xl font-semibold mb-4">
             No tasks for today yet
           </h2>
@@ -93,11 +93,11 @@ export function TodayClient({ initialTasks }: Props) {
       )}
 
       {(tasks.length > 0 || showForm) && (
-        <div className="mt-10 space-y-4 max-w-md mx-auto ml-10">
+        <div className="mt-12 space-y-4 max-w-md mx-auto lg:ml-0">
           {tasks.map((task) => (
             <div
               key={task.id}
-              className="border p-2 rounded flex items-center justify-between"
+              className="border p-3 rounded flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 w-full"
             >
               <button
                 onClick={() => handleComplete(task.id)}
@@ -109,7 +109,7 @@ export function TodayClient({ initialTasks }: Props) {
                 </span>
               </button>
 
-              <div className="ml-4 flex-1">
+              <div className="flex-1">
                 <div className="font-medium">{task.task}</div>
                 <div className="text-sm text-gray-500">Due: {task.dueDate}</div>
               </div>

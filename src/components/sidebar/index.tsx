@@ -4,6 +4,9 @@ import { ReactNode, useState, createContext, useContext, useEffect } from 'react
 import { Tooltip } from 'react-tooltip'
 import { ChevronFirst, ChevronLast, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
+import { signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+
 
 interface SidebarItemProps {
   icon: ReactNode;
@@ -25,6 +28,10 @@ const SidebarContext = createContext<SidebarContextType>({ expanded: false });
 export default function Sidebar({ children }: SidebarProps) {
   const [expanded, setExpanded] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { data: session } = useSession();
+  const name = session?.user?.name;
+  
 
   useEffect(() => {
     const handleResize = () => {
@@ -43,7 +50,10 @@ export default function Sidebar({ children }: SidebarProps) {
   const sidebarContent = (
     <nav className="h-full flex flex-col bg-gray-400 border-r border-gray-400 shadow-sm">
       <div className="p-4 pb-2 flex justify-between items-center">
-        <div className="flex items-center space-x-3 px-3 py-2 hover:bg-indigo-100 rounded-md cursor-pointer">
+        <button
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+          className="flex items-center space-x-3 px-3 py-2 hover:bg-indigo-100 rounded-md cursor-pointer"
+        >
           <Image
               src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
               alt="User Avatar"
@@ -54,11 +64,24 @@ export default function Sidebar({ children }: SidebarProps) {
             />
             {expanded && (
               <div className="flex items-center gap-2 whitespace-nowrap overflow-hidden">
-                <h4 className="font-semibold truncate">Harrison Glennon</h4>
+                <h4 className="font-semibold truncate">{name}</h4>
                 <MoreVertical size={14} />
               </div>
             )}
-            </div>
+            {dropdownOpen && (
+              <div className="absolute left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  Settings
+                </button>
+                <button
+                  onClick={() => signOut()}
+                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+            </button>
             <button
               aria-label="Toggle sidebar"
               aria-expanded={expanded}

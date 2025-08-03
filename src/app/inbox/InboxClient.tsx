@@ -86,7 +86,7 @@ export function InboxClient({ initialTasks }: Props) {
           </p>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-gray-400 text-white px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors duration-200 mt-4"
+            className="bg-gray-400 text-white px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors duration-200 mt-4 cursor-pointer"
           >
             Add task
           </button>
