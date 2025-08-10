@@ -33,8 +33,6 @@ export function CompletedClient({ initialCompletedTasks }: Props) {
       <h1 className="text-3xl font-bold">
         Completed
       </h1>
-
-      {/* Empty state */}
       {tasks.length === 0 ? (
         <div className="mx-auto max-w-md text-center mt-48">
           <h2 className="text-2xl font-semibold mb-4">

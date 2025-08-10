@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import { useRef } from 'react';
+import SettingsModal from './settingPage';
 
 
 interface SidebarItemProps {
@@ -30,6 +31,7 @@ export default function Sidebar({ children }: SidebarProps) {
   const [expanded, setExpanded] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const { data: session } = useSession();
   const name = session?.user?.name;
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -73,51 +75,63 @@ export default function Sidebar({ children }: SidebarProps) {
   const sidebarContent = (
     <nav className="h-full flex flex-col bg-gray-400 border-r border-gray-400 shadow-sm">
       <div ref={dropdownRef} className="relative p-4 pb-2 flex justify-between items-center">
-      
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="flex items-center space-x-3 px-3 py-2 hover:bg-indigo-100 rounded-md cursor-pointer"
+          aria-expanded={dropdownOpen}
+          className="flex items-center space-x-3 px-3 py-2 rounded-md cursor-pointer 
+                    hover:bg-indigo-100 aria-expanded:bg-indigo-100"
         >
           <Image
-              src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
-              alt="User Avatar"
-              width={32}
-              height={32}
-              className="rounded-md"
-              unoptimized
-            />
-            {expanded && (
-              <div className="flex items-center gap-2 whitespace-nowrap overflow-hidden">
-                <h4 className="font-semibold truncate">{name}</h4>
-                <MoreVertical size={14} />
-              </div>
-            )}
-            {dropdownOpen && (
-              <div className="absolute left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                  Settings
-                </button>
-                <button
-                  onClick={() => signOut()}
-                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
+            src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
+            alt="User Avatar"
+            width={32}
+            height={32}
+            className="rounded-md"
+            unoptimized
+          />
+
+          {expanded && (
+            <div className="flex items-center gap-2 whitespace-nowrap overflow-hidden">
+              <h4 className="font-semibold truncate">{name}</h4>
+              <MoreVertical size={14} />
+            </div>
+          )}
+        </button>
+
+        {dropdownOpen && (
+          <div className="absolute left-4 mt-31 w-73 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+            <button
+              onClick={() => {
+                setDropdownOpen(false);
+                setSettingsOpen(true);
+              }}
+              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              Settings
             </button>
             <button
-              aria-label="Toggle sidebar"
-              aria-expanded={expanded}
-              onClick={() => setExpanded(!expanded)}
-              className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer"
+              onClick={() => signOut()}
+              className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
             >
-              {expanded ? <ChevronFirst size={22} /> : <ChevronLast size={22} />}
+              Logout
             </button>
           </div>
-          <SidebarContext.Provider value={{ expanded }}>
-            <ul className="flex-1 px-3">{children}</ul>
-        </SidebarContext.Provider>
+        )}
+
+        
+
+        <button
+          aria-label="Toggle sidebar"
+          aria-expanded={expanded}
+          onClick={() => setExpanded(!expanded)}
+          className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer"
+        >
+          {expanded ? <ChevronFirst size={22} /> : <ChevronLast size={22} />}
+        </button>
+      </div>
+      <SidebarContext.Provider value={{ expanded }}>
+        <ul className="flex-1 px-3">{children}</ul>
+      </SidebarContext.Provider>
     </nav>
   );
   
@@ -150,6 +164,13 @@ export default function Sidebar({ children }: SidebarProps) {
           {sidebarContent}
         </aside>
       )}
+
+      
+    {/* Settings modal goes here */}
+    {settingsOpen && (
+      <SettingsModal onClose={() => setSettingsOpen(false)} />
+    )}
+
     </>
   );
 }
