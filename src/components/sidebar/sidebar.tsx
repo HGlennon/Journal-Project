@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import { useRef } from 'react';
-import SettingsModal from './settingPage';
+import SettingsModal from '@/components/settingModal';
 
 
 interface SidebarItemProps {
@@ -35,7 +35,7 @@ export default function Sidebar({ children }: SidebarProps) {
   const { data: session } = useSession();
   const name = session?.user?.name;
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+  const firstLetter = name ? name.charAt(0) : '';  
 
   useEffect(() => {
     const handleResize = () => {
@@ -78,11 +78,10 @@ export default function Sidebar({ children }: SidebarProps) {
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
           aria-expanded={dropdownOpen}
-          className="flex items-center space-x-3 px-3 py-2 rounded-md cursor-pointer 
-                    hover:bg-indigo-100 aria-expanded:bg-indigo-100"
+          className="flex items-center space-x-3 px-3 py-2 rounded-md cursor-pointer hover:bg-indigo-100 aria-expanded:bg-indigo-100"
         >
           <Image
-            src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
+            src={`https://ui-avatars.com/api/?name=${firstLetter}&background=c7d2fe&color=3730a3&bold=true`}
             alt="User Avatar"
             width={32}
             height={32}
@@ -117,9 +116,6 @@ export default function Sidebar({ children }: SidebarProps) {
             </button>
           </div>
         )}
-
-        
-
         <button
           aria-label="Toggle sidebar"
           aria-expanded={expanded}
@@ -134,7 +130,7 @@ export default function Sidebar({ children }: SidebarProps) {
       </SidebarContext.Provider>
     </nav>
   );
-  
+
   return (
     <>
       {/* Mobile open button */}

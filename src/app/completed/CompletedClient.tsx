@@ -47,13 +47,12 @@ export function CompletedClient({ initialCompletedTasks }: Props) {
               key={task.id}
               className="border p-3 rounded flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 w-full"
             >
-              {/* Already ticked circle - fades on hover */}
               <button
-                onClick={() => handleUndoComplete(task.id)}
-                className="w-8 h-8 border-2 border-green-500 rounded-full flex items-center justify-center group hover:bg-gray-100 disabled:opacity-50"
+                //onClick={() => handleUndoComplete(task.id)} LEAVING THIS OUT FOR NOW
+                className="w-8 h-8 border-2 border-green-500 rounded-full flex items-center justify-center group"
                 disabled={isPending}
               >
-                <span className="text-green-500 opacity-100 group-hover:opacity-0 transition-opacity duration-200">
+                <span className="text-green-500 opacity-100 transition-opacity duration-200">
                   ✓
                 </span>
               </button>

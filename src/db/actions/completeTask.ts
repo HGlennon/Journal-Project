@@ -11,12 +11,12 @@ export async function completeTask(formData: FormData) {
 
   await db
     .update(tasksTable)
-    .set({ completed: 1 })   // mark as completed instead of deleting
+    .set({ completed: 1 })
     .where(eq(tasksTable.id, taskId));
 
-  // Revalidate paths where the task list is displayed
-  revalidatePath('/inbox');       // 🔁 refresh Inbox page
-  revalidatePath('/completed');   // 🔁 refresh Completed page
+  // Refresh paths where the task list is displayed
+  revalidatePath('/inbox');      
+  revalidatePath('/completed');
 
   return taskId;
 }
