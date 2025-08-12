@@ -12,21 +12,21 @@ interface Props {
 }
 
 export function CompletedClient({ initialCompletedTasks }: Props) {
-  const [tasks, setTasks] = useState<Task[]>(initialCompletedTasks);
-  const [isPending, startTransition] = useTransition();
+  const [tasks] = useState<Task[]>(initialCompletedTasks);
+  const [isPending] = useTransition();
 
-  function handleUndoComplete(taskId: number) {
-    startTransition(async () => {
-      try {
-        const formData = new FormData();
-        formData.append('taskId', String(taskId));
-        await undoCompleteTask(formData);
-        setTasks(prev => prev.filter(t => t.id !== taskId));
-      } catch (error) {
-        console.error('Failed to undo complete:', error);
-      }
-    });
-  }
+  //function handleUndoComplete(taskId: number) {
+    //startTransition(async () => {
+      //try {
+        //const formData = new FormData();
+        //formData.append('taskId', String(taskId));
+        //await undoCompleteTask(formData);
+        //setTasks(prev => prev.filter(t => t.id !== taskId));
+      //} catch (error) {
+        //console.error('Failed to undo complete:', error);
+      //}
+    //});
+  //}
 
   return (
     <div className="px-4 py-8 transition-all max-w-4xl mx-auto lg:ml-64">

@@ -135,8 +135,7 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
 
 function AccountTab() {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [has2FA, setHas2FA] = useState(false);
+  const [email] = useState('');
 
   return (
     <div className="max-w-2xl">
