@@ -17,7 +17,7 @@ export async function GET() {
 
   if (!user) return NextResponse.json({ message: 'Not found' }, { status: 404 });
 
-  const { password: _password, ...safe } = user;
+  const { password: safe } = user;
   return NextResponse.json(safe, { status: 200 });
 }
 
