@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaEnvelope, FaCalendarDays } from "react-icons/fa6";
+import { FaEnvelope } from "react-icons/fa6";
 import { SiTicktick } from "react-icons/si";
 import { SidebarItem } from "@/components/sidebar/sidebar";
 import  CalendarDateIcon from "@/components/CalendarIcon"; // Ensure this import is correct

@@ -11,7 +11,7 @@ export async function GET() {
   const user = await db.select().from(usersTable).where(eq(usersTable.id, userId)).then(r => r[0]);
   if (!user) return NextResponse.json({ message: 'Not found' }, { status: 404 });
 
-  const { password, ...safe } = user as any;
+  const { safe } = user as any;
   return NextResponse.json(safe, { status: 200 });
 }
 

@@ -139,17 +139,13 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
 }
 function AccountTab() {
   const { data: session, update } = useSession();
-
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [changingPw, setChangingPw] = useState(false);
-  const router = useRouter();
   const [deleting, setDeleting] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState('');
   const accountEmail = session?.user?.email ?? '';
