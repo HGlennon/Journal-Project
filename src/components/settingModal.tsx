@@ -2,9 +2,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-
-
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -150,8 +147,6 @@ function AccountTab() {
   const [confirmEmail, setConfirmEmail] = useState('');
   const accountEmail = session?.user?.email ?? '';
 
-
-  // Load current user
   useEffect(() => {
     (async () => {
       const res = await fetch('/api/me', { cache: 'no-store' });
@@ -229,7 +224,6 @@ function AccountTab() {
   }
 };
 
-
   if (loading) return <p className="text-sm text-gray-500">Loading…</p>;
 
   return (
@@ -297,6 +291,7 @@ function AccountTab() {
         </div>
       </section>
 
+      {/* Delete account */}
       <section id="account-delete" className="space-y-3 py-6">
         <h3 className="font-semibold text-red-700">Delete account</h3>
         <p className="text-sm text-gray-600">

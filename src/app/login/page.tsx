@@ -31,7 +31,7 @@ export default function AuthPage() {
         const data = await res.json().catch(() => null);
         setError(data?.message || `Registration failed (${res.status}).`);
       }
-    } catch (err) {
+    } catch {
       setError('Network error. Please try again.');
     }
   }
