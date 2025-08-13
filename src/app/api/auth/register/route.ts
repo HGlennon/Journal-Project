@@ -1,4 +1,4 @@
-// Keep this route on Node.js so bcrypt works (esp. on Vercel)
+// app/api/auth/register/route.ts (or app/api/register/route.ts)
 export const runtime = 'nodejs';
 
 import { NextResponse } from 'next/server';
@@ -6,27 +6,32 @@ import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { usersTable } from '@/db/schema';
+import type { SelectUser } from '@/db/schema';
+
+type RegisterBody = {
+  email: string;
+  password: string;
+  name: string;
+};
 
 export async function POST(req: Request) {
   try {
-    const { email, password, name } = await req.json();
+    const { email, password, name } = (await req.json()) as Partial<RegisterBody>;
 
     if (!email || !password) {
       return NextResponse.json({ message: 'Email and password are required' }, { status: 400 });
     }
 
-    // Ensure name (your schema requires it)
     const safeName = (name ?? '').trim();
     if (!safeName) {
       return NextResponse.json({ message: 'Name is required' }, { status: 400 });
     }
 
-    // Uniqueness check
-    const existingUser = await db
+    const existingUser = (await db
       .select()
       .from(usersTable)
       .where(eq(usersTable.email, email))
-      .then(r => r[0]);
+      .then(r => r[0])) as SelectUser | undefined;
 
     if (existingUser) {
       return NextResponse.json({ message: 'User already exists' }, { status: 409 });
@@ -42,10 +47,10 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true }, { status: 201 });
-  } catch (error: any) {
-    // Optional: map unique constraint error to 409
-    const msg = String(error?.message || error);
-    if (msg.toLowerCase().includes('unique') || msg.toLowerCase().includes('constraint')) {
+  } catch (error: unknown) {
+    // Map unique constraint errors to 409 without using `any`
+    const message = error instanceof Error ? error.message : '';
+    if (/unique|constraint/i.test(message)) {
       return NextResponse.json({ message: 'User already exists' }, { status: 409 });
     }
     console.error('Registration error:', error);

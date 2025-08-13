@@ -134,6 +134,17 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
     </div>
   );
 }
+
+type ApiError = { message?: string };
+
+async function safeJson<T>(res: Response): Promise<T | null> {
+  try {
+    return (await res.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
 function AccountTab() {
   const { data: session, update } = useSession();
   const [name, setName] = useState('');
@@ -151,9 +162,11 @@ function AccountTab() {
     (async () => {
       const res = await fetch('/api/me', { cache: 'no-store' });
       if (res.ok) {
-        const u = await res.json();
-        setName(u.name ?? '');
-        setEmail(u.email ?? '');
+        const u = await res.json().catch(() => null) as { name?: string; email?: string } | null;
+        if (u) {
+          setName(u.name ?? '');
+          setEmail(u.email ?? '');
+        }
       }
       setLoading(false);
     })();
@@ -167,15 +180,17 @@ function AccountTab() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email }),
       });
+
       if (!res.ok) {
-        const msg = await res.json().catch(() => ({}));
+        const msg = await safeJson<ApiError>(res);
         throw new Error(msg?.message || 'Failed to save');
       }
-      // refresh NextAuth session values (name/email)
+
       await update({ name, email });
       alert('Profile updated');
-    } catch (e: any) {
-      alert(e.message || 'Error saving');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Error saving';
+      alert(message);
     } finally {
       setSaving(false);
     }
@@ -189,40 +204,45 @@ function AccountTab() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ currentPassword, newPassword }),
       });
+
       if (!res.ok) {
-        const msg = await res.json().catch(() => ({}));
+        const msg = await safeJson<ApiError>(res);
         throw new Error(msg?.message || 'Failed to change password');
       }
+
       setCurrentPassword('');
       setNewPassword('');
       alert('Password changed');
-    } catch (e: any) {
-      alert(e.message || 'Error changing password');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Error changing password';
+      alert(message);
     } finally {
       setChangingPw(false);
     }
   };
 
   const deleteAccount = async () => {
-  if (confirmEmail !== accountEmail) {
-    alert('Please type your account email to confirm.');
-    return;
-  }
-  setDeleting(true);
-  try {
-    const res = await fetch('/api/me/delete', { method: 'DELETE' });
-    if (!res.ok) {
-      const msg = await res.json().catch(() => ({}));
-      throw new Error(msg?.message || 'Failed to delete account');
+    if (confirmEmail !== accountEmail) {
+      alert('Please type your account email to confirm.');
+      return;
     }
-    // Sign out and send to homepage (or a goodbye page)
-    await signOut({ callbackUrl: '/' });
-  } catch (e: any) {
-    alert(e.message || 'Error deleting account');
-  } finally {
-    setDeleting(false);
-  }
-};
+    setDeleting(true);
+    try {
+      const res = await fetch('/api/me/delete', { method: 'DELETE' });
+
+      if (!res.ok) {
+        const msg = await safeJson<ApiError>(res);
+        throw new Error(msg?.message || 'Failed to delete account');
+      }
+
+      await signOut({ callbackUrl: '/' });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Error deleting account';
+      alert(message);
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   if (loading) return <p className="text-sm text-gray-500">Loading…</p>;
 

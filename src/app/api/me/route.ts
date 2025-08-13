@@ -3,15 +3,21 @@ import { db } from '@/db';
 import { usersTable } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getCurrentUserId } from '@/app/lib/getCurrentUserId';
+import type { SelectUser } from '@/db/schema';
 
 export async function GET() {
   const userId = await getCurrentUserId();
   if (!userId) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-  const user = await db.select().from(usersTable).where(eq(usersTable.id, userId)).then(r => r[0]);
+  const user = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.id, userId))
+    .then(r => r[0] as SelectUser | undefined);
+
   if (!user) return NextResponse.json({ message: 'Not found' }, { status: 404 });
 
-  const { safe } = user as any;
+  const { password: _password, ...safe } = user;
   return NextResponse.json(safe, { status: 200 });
 }
 
