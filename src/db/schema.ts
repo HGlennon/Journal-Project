@@ -7,7 +7,7 @@ export const usersTable = sqliteTable('users', {
   email: text('email').unique().notNull(),
   password: text('password').notNull(),
   age: integer('age').notNull().default(18),
-  hasAddedTask: integer('has_added_task').default(0), // Moved here
+  hasAddedTask: integer('has_added_task').default(0),
 });
 
 export const postsTable = sqliteTable('posts', {
@@ -29,7 +29,7 @@ export const tasksTable = sqliteTable('tasks', {
   dueDate: text('due_date').notNull(),
   userId: integer('user_id')
     .references(() => usersTable.id, { onDelete: 'set null' }),
-  completed: integer('completed').notNull().default(0), // 0 = false, 1 = true
+  completed: integer('completed').notNull().default(0),
   createdAt: text('created_at')
     .default(sql`(CURRENT_TIMESTAMP)`)
     .notNull(),

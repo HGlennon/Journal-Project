@@ -3,7 +3,7 @@ import { db } from '@/db';
 import { tasksTable } from '@/db/schema';
 import { and, eq, desc } from 'drizzle-orm';
 import { CompletedClient } from './CompletedClient';
-import { getCurrentUserId } from '@/app/lib/auth';
+import { getCurrentUserId } from '@/app/lib/getCurrentUserId';
 import { redirect } from 'next/navigation';
 
 export default async function Completed() {

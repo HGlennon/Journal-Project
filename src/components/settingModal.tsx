@@ -1,5 +1,10 @@
 'use client';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+
+
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -132,32 +137,111 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
     </div>
   );
 }
-
 function AccountTab() {
+  const { data: session, update } = useSession();
+
   const [name, setName] = useState('');
-  const [email] = useState('');
+  const [email, setEmail] = useState('');
+
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [changingPw, setChangingPw] = useState(false);
+  const router = useRouter();
+  const [deleting, setDeleting] = useState(false);
+  const [confirmEmail, setConfirmEmail] = useState('');
+  const accountEmail = session?.user?.email ?? '';
+
+
+  // Load current user
+  useEffect(() => {
+    (async () => {
+      const res = await fetch('/api/me', { cache: 'no-store' });
+      if (res.ok) {
+        const u = await res.json();
+        setName(u.name ?? '');
+        setEmail(u.email ?? '');
+      }
+      setLoading(false);
+    })();
+  }, []);
+
+  const saveProfile = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch('/api/me', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email }),
+      });
+      if (!res.ok) {
+        const msg = await res.json().catch(() => ({}));
+        throw new Error(msg?.message || 'Failed to save');
+      }
+      // refresh NextAuth session values (name/email)
+      await update({ name, email });
+      alert('Profile updated');
+    } catch (e: any) {
+      alert(e.message || 'Error saving');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const changePassword = async () => {
+    setChangingPw(true);
+    try {
+      const res = await fetch('/api/me/password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+      if (!res.ok) {
+        const msg = await res.json().catch(() => ({}));
+        throw new Error(msg?.message || 'Failed to change password');
+      }
+      setCurrentPassword('');
+      setNewPassword('');
+      alert('Password changed');
+    } catch (e: any) {
+      alert(e.message || 'Error changing password');
+    } finally {
+      setChangingPw(false);
+    }
+  };
+
+  const deleteAccount = async () => {
+  if (confirmEmail !== accountEmail) {
+    alert('Please type your account email to confirm.');
+    return;
+  }
+  setDeleting(true);
+  try {
+    const res = await fetch('/api/me/delete', { method: 'DELETE' });
+    if (!res.ok) {
+      const msg = await res.json().catch(() => ({}));
+      throw new Error(msg?.message || 'Failed to delete account');
+    }
+    // Sign out and send to homepage (or a goodbye page)
+    await signOut({ callbackUrl: '/' });
+  } catch (e: any) {
+    alert(e.message || 'Error deleting account');
+  } finally {
+    setDeleting(false);
+  }
+};
+
+
+  if (loading) return <p className="text-sm text-gray-500">Loading…</p>;
 
   return (
     <div className="max-w-2xl">
-      {/* Top content header like Todoist */}
       <div className="mb-6">
         <h2 className="text-lg font-semibold">Account</h2>
+        <p className="text-sm text-gray-500">Signed in as {session?.user?.email}</p>
       </div>
-
-      {/* Photo */}
-      <section id="account-profile-picture" className="space-y-2 pb-6 border-b">
-        <h3 className="font-semibold">Photo</h3>
-        <div className="flex items-center gap-4">
-          <div className="h-12 w-12 rounded-full bg-purple-500 text-white flex items-center justify-center font-medium">
-            H
-          </div>
-          <div className="space-x-2">
-            <button type="button" className="rounded-md border px-3 py-1.5 text-sm bg-white hover:bg-gray-50">Change photo</button>
-            <button type="button" className="rounded-md border border-red-200 px-3 py-1.5 text-sm text-red-600 bg-red-50 hover:bg-red-100">Remove photo</button>
-          </div>
-        </div>
-        <p className="text-sm text-gray-500">Pick a photo up to 4MB.</p>
-      </section>
 
       {/* Name */}
       <section id="account-name" className="space-y-2 py-6 border-b">
@@ -177,22 +261,92 @@ function AccountTab() {
       {/* Email */}
       <section id="account-email" className="space-y-2 py-6 border-b">
         <h3 className="font-semibold">Email</h3>
-        <div className="flex items-center gap-3 flex-wrap">
-          <p className="text-sm text-gray-700">{email || 'you@example.com'}</p>
-          <button type="button" className="rounded-md border px-3 py-1.5 text-sm bg-white hover:bg-gray-50">Change email</button>
+        <div className="max-w-md">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
         </div>
       </section>
 
       {/* Password */}
       <section id="account-password" className="space-y-2 py-6 border-b">
         <h3 className="font-semibold">Password</h3>
-        <button type="button" className="rounded-md border px-3 py-1.5 text-sm bg-white hover:bg-gray-50">Change password</button>
+        <div className="max-w-md space-y-2">
+          <input
+            type="password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            placeholder="Current password"
+            className="w-full rounded-md border px-3 py-2 text-sm"
+          />
+          <input
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="New password"
+            className="w-full rounded-md border px-3 py-2 text-sm"
+          />
+          <button
+            type="button"
+            onClick={changePassword}
+            disabled={changingPw || !currentPassword || !newPassword}
+            className="rounded-md border px-3 py-1.5 text-sm bg-white hover:bg-gray-50"
+          >
+            {changingPw ? 'Changing…' : 'Change password'}
+          </button>
+        </div>
       </section>
-      {/* Footer actions (dummy) */}
+
+      <section id="account-delete" className="space-y-3 py-6">
+        <h3 className="font-semibold text-red-700">Delete account</h3>
+        <p className="text-sm text-gray-600">
+          This will permanently delete your account. Your posts will be removed, and tasks will be retained but detached from your account.
+        </p>
+
+        <div className="max-w-md space-y-2">
+          <label className="text-sm text-gray-700">
+            Type your email <span className="font-mono">{accountEmail}</span> to confirm:
+          </label>
+          <input
+            type="email"
+            value={confirmEmail}
+            onChange={(e) => setConfirmEmail(e.target.value)}
+            placeholder={accountEmail || 'you@example.com'}
+            className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
+          <button
+            type="button"
+            onClick={deleteAccount}
+            disabled={deleting || confirmEmail !== accountEmail || !accountEmail}
+            className={`rounded-md px-3 py-2 text-sm border
+              ${confirmEmail === accountEmail && accountEmail && !deleting
+                ? 'bg-red-600 text-white hover:bg-red-700 border-red-700'
+                : 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'}`}
+          >
+            {deleting ? 'Deleting…' : 'Delete account'}
+          </button>
+        </div>
+      </section>
+
+      {/* Footer actions */}
       <div className="flex items-center justify-end gap-3 border-t pt-4">
-        <button type="button" className="rounded-md border px-4 py-2 text-sm hover:bg-gray-50">Cancel</button>
-        <button type="button" className="rounded-md bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700">Save changes</button>
+        <button type="button" className="rounded-md border px-4 py-2 text-sm hover:bg-gray-50">
+          Cancel
+        </button>
+        <button
+          type="button"
+          onClick={saveProfile}
+          disabled={saving}
+          className="rounded-md bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700"
+        >
+          {saving ? 'Saving…' : 'Save changes'}
+        </button>
       </div>
     </div>
   );
 }
+

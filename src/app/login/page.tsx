@@ -17,30 +17,21 @@ export default function AuthPage() {
     setError(null);
 
     try {
-      const res = await fetch('/api/auth', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, name }),
       });
 
       if (res.ok) {
-        // Automatically sign in after registration
-        const signInRes = await signIn('credentials', {
-          redirect: false,
-          email,
-          password,
-        });
-
-        if (signInRes?.ok) {
-          router.push('/inbox');
-        } else {
-          setError('Sign-in failed after registration.');
-        }
+        const signInRes = await signIn('credentials', { redirect: false, email, password });
+        if (signInRes?.ok) router.push('/inbox');
+        else setError('Sign-in failed after registration.');
       } else {
         const data = await res.json().catch(() => null);
-        setError(data?.message || 'Registration failed. Please try again.');
+        setError(data?.message || `Registration failed (${res.status}).`);
       }
-    } catch {
+    } catch (err) {
       setError('Network error. Please try again.');
     }
   }
@@ -48,20 +39,10 @@ export default function AuthPage() {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-
-    const res = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    });
-
-    if (res?.ok) {
-      router.push('/inbox');
-    } else {
-      setError('Invalid email or password.');
-    }
+    const res = await signIn('credentials', { email, password, redirect: false });
+    if (res?.ok) router.push('/inbox');
+    else setError('Invalid email or password.');
   }
-
   return (
     <div>
       <div style={{ marginBottom: 20 }}>
@@ -123,7 +104,5 @@ export default function AuthPage() {
           {error}
         </p>
       )}
-  
-  
     </div>  );
 }

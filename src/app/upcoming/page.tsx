@@ -1,5 +1,5 @@
 export default function UpcomingPage() {
   return (
-    <h1>hello world</h1>
+    <h1>PLANNED FOR LATER RELEASE</h1>
   );
 }

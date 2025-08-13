@@ -3,7 +3,7 @@
 import { db } from '@/db';
 import { tasksTable } from '@/db/schema';
 import { z } from 'zod';
-import { getCurrentUserId } from '@/app/lib/auth';  // <-- import this
+import { getCurrentUserId } from '@/app/lib/getCurrentUserId';
 
 const taskSchema = z.object({
   task: z.string().min(1, "Task cannot be empty").max(500),

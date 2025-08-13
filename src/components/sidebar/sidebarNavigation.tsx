@@ -32,15 +32,6 @@ export default function SidebarNavigation() {
       </Link>
       
       <Link 
-        href="/upcoming" 
-        aria-label="Upcoming"
-        data-tooltip-id="Upcoming"
-        data-tooltip-content="Upcoming"
-      >
-        <SidebarItem icon={<FaCalendarDays size={20} className={pathname === "/upcoming" ? "text-blue-600" : "text-gray-600"}/>} text="Upcoming" active={pathname === "/upcoming"} />
-      </Link>
-      
-      <Link 
         href="/completed" 
         aria-label="Completed"
         data-tooltip-id="Completed"

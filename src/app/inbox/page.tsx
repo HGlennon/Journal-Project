@@ -2,7 +2,7 @@ import { db } from '@/db';
 import { tasksTable } from '@/db/schema';
 import { desc, and, eq } from 'drizzle-orm';
 import { InboxClient } from './InboxClient';
-import { getCurrentUserId } from '@/app/lib/auth';
+import { getCurrentUserId } from '@/app/lib/getCurrentUserId';
 import { redirect } from 'next/navigation';
 
 export default async function Inbox() {

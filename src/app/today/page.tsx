@@ -2,7 +2,7 @@ import { db } from '@/db';
 import { tasksTable } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { TodayClient } from './TodayClient';
-import { getCurrentUserId } from '@/app/lib/auth';
+import { getCurrentUserId } from '@/app/lib/getCurrentUserId';
 import { redirect } from 'next/navigation';
 export const dynamic = 'force-dynamic';
 
