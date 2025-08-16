@@ -151,7 +151,6 @@ function AccountTab() {
   const [email, setEmail] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [changingPw, setChangingPw] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -168,7 +167,6 @@ function AccountTab() {
           setEmail(u.email ?? '');
         }
       }
-      setLoading(false);
     })();
   }, []);
 
@@ -243,8 +241,6 @@ function AccountTab() {
       setDeleting(false);
     }
   };
-
-  if (loading) return <p className="text-sm text-gray-500">Loading…</p>;
 
   return (
     <div className="max-w-2xl">

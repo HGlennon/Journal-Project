@@ -65,11 +65,6 @@ export function InboxClient({ initialTasks }: Props) {
     });
   }
 
-
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className="px-4 py-8 transition-all max-w-4xl mx-auto lg:ml-64">
       <h1 className="text-3xl font-bold">

@@ -41,10 +41,10 @@ export default function Sidebar({ children }: SidebarProps) {
     const handleResize = () => {
       const mobile = window.innerWidth < 600;
       setIsMobile(mobile);
-      setExpanded(!mobile); // collapse on mobile, expand on desktop
+      setExpanded(!mobile);
     };
 
-    handleResize(); // Initial mount
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);

@@ -2,9 +2,9 @@
 import { db } from '@/db';
 import { tasksTable } from '@/db/schema';
 import { and, eq, desc } from 'drizzle-orm';
-import { CompletedClient } from './CompletedClient';
 import { getCurrentUserId } from '@/app/lib/getCurrentUserId';
 import { redirect } from 'next/navigation';
+import { CompletedClient } from '@/app/completed/CompletedClient';
 
 export default async function Completed() {
   const userId = await getCurrentUserId();
