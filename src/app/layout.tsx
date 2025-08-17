@@ -4,6 +4,7 @@ import Sidebar from '@/components/sidebar/sidebar';
 import SessionWrapper from '@/components/SessionWrapper';
 import SidebarNavigation from '@/components/sidebar/sidebarNavigation';
 import "./main.css";
+import { ThemeProvider } from '@/components/themeProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,14 +30,16 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionWrapper>
-          <div className="flex h-screen w-full">
-            <Sidebar>
-              <SidebarNavigation />
-            </Sidebar>
-            <main className="flex-1 overflow-auto px-4 py-8 bg-white">
-              {children}
-            </main>
-          </div>
+          <ThemeProvider>
+            <div className="flex h-screen w-full">
+              <Sidebar>
+                <SidebarNavigation />
+              </Sidebar>
+              <main className="flex-1 overflow-auto px-4 py-8 bg-main-background">
+                  {children}
+              </main>
+            </div>
+          </ThemeProvider>
         </SessionWrapper>
       </body>
     </html>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(false);
@@ -11,39 +11,56 @@ export default function AuthPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { update } = useSession(); 
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (res?.ok) {
+      await update(); // 👈 pull fresh session (with theme) from server
+      router.push("/inbox");
+    } else {
+      setError("Invalid email or password.");
+    }
+  }
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
 
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, name }),
       });
 
       if (res.ok) {
-        const signInRes = await signIn('credentials', { redirect: false, email, password });
-        if (signInRes?.ok) router.push('/inbox');
-        else setError('Sign-in failed after registration.');
+        const signInRes = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
+        });
+        if (signInRes?.ok) {
+          await update(); // 👈 same here
+          router.push("/inbox");
+        } else setError("Sign-in failed after registration.");
       } else {
         const data = await res.json().catch(() => null);
         setError(data?.message || `Registration failed (${res.status}).`);
       }
     } catch {
-      setError('Network error. Please try again.');
+      setError("Network error. Please try again.");
     }
   }
-
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    const res = await signIn('credentials', { email, password, redirect: false });
-    if (res?.ok) router.push('/inbox');
-    else setError('Invalid email or password.');
-  }
-  return (
+    return (
     <div>
       <div style={{ marginBottom: 20 }}>
         <button onClick={() => setIsLogin(true)} disabled={isLogin}>

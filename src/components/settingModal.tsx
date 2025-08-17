@@ -7,10 +7,11 @@ interface SettingsModalProps {
   onClose: () => void;
 }
 
-type TabKey = 'account';
+type TabKey = 'account' | 'theme';
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'account', label: 'Account' },
+  { key: 'theme', label: 'Theme' },
 ];
 
 export default function SettingsModal({ onClose }: SettingsModalProps) {
@@ -129,6 +130,7 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
         {/* Content */}
         <main ref={contentRef} className="flex-1 overflow-auto p-6">
           {active === 'account' && <AccountTab />}
+          {active === 'theme' && <ThemesTab />}
         </main>
       </div>
     </div>
@@ -356,4 +358,38 @@ function AccountTab() {
     </div>
   );
 }
+
+import { useTheme } from './themeProvider';
+
+function ThemesTab() {
+  const { theme, setTheme } = useTheme();
+
+  const themes: {key: 'default' | 'dark' | 'pastel'; label: string}[] = [
+    { key: 'default', label: 'Default' },
+    { key: 'dark', label: 'Dark' },
+    { key: 'pastel', label: 'Pastel' },
+  ];
+
+  return (
+    <div className="max-w-md">
+      <h2 className="text-lg font-semibold mb-4">Themes</h2>
+      <div className="space-y-2">
+        {themes.map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setTheme(t.key)}
+            className={`w-full flex justify-between items-center rounded-md border px-3 py-2 text-sm
+              ${theme === t.key
+                ? 'bg-indigo-100 text-indigo-800 border-indigo-200'
+                : 'hover:bg-gray-50 text-gray-700 border-gray-200'}`}
+          >
+            {t.label}
+            {theme === t.key && <span className="text-xs">✓</span>}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 

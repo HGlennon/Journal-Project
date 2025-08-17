@@ -73,12 +73,12 @@ export default function Sidebar({ children }: SidebarProps) {
   }, [dropdownOpen]);
 
   const sidebarContent = (
-    <nav className="h-full flex flex-col bg-gray-400 border-r border-gray-400 shadow-sm">
+    <nav className="h-full flex flex-col bg-sidebar">
       <div ref={dropdownRef} className="relative p-4 pb-2 flex justify-between items-center">
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
           aria-expanded={dropdownOpen}
-          className="flex items-center space-x-3 px-3 py-2 rounded-md cursor-pointer hover:bg-indigo-100 aria-expanded:bg-indigo-100"
+          className="flex items-center space-x-3 px-3 py-2 rounded-md cursor-pointer hover:bg-sidebar-hover aria-expanded:bg-sidebar-hover"
         >
           <Image
             src={`https://ui-avatars.com/api/?name=${firstLetter}&background=c7d2fe&color=3730a3&bold=true`}
@@ -91,7 +91,7 @@ export default function Sidebar({ children }: SidebarProps) {
 
           {expanded && (
             <div className="flex items-center gap-2 whitespace-nowrap overflow-hidden">
-              <h4 className="font-semibold truncate">{name}</h4>
+              <h4 className="font-semibold truncate text-activeTextColor">{name}</h4>
               <MoreVertical size={14} />
             </div>
           )}
@@ -120,7 +120,7 @@ export default function Sidebar({ children }: SidebarProps) {
           aria-label="Toggle sidebar"
           aria-expanded={expanded}
           onClick={() => setExpanded(!expanded)}
-          className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer"
+          className="p-1.5 rounded-lg hover:bg-sidebar-hover text-textColor cursor-pointer"
         >
           {expanded ? <ChevronFirst size={22} /> : <ChevronLast size={22} />}
         </button>
@@ -138,7 +138,7 @@ export default function Sidebar({ children }: SidebarProps) {
         <button
           aria-label="Open sidebar"
           onClick={toggleSidebar}
-          className="fixed top-4 left-4 z-50 bg-gray-200 p-1.5 rounded-lg hover:bg-gray-300 cursor-pointer"
+          className="fixed top-4 left-4 z-50 p-1.5 rounded-lg hover:bg-sidebar-hover cursor-pointer"
         >
           <ChevronLast size={22} />
         </button>
@@ -155,7 +155,7 @@ export default function Sidebar({ children }: SidebarProps) {
       {!isMobile && (
         <aside
           className={`relative h-screen shrink-0 transition-all duration-300`}
-          style={{ width: expanded ? '20rem' : '8rem' }} // 64px or 256px
+          style={{ width: expanded ? '17rem' : '8rem' }} // 64px or 256px
         >
           {sidebarContent}
         </aside>
@@ -176,41 +176,29 @@ export function SidebarItem({ icon, text, active, alert }: SidebarItemProps) {
 
   return (
     <li
-      className={`group relative flex items-center py-2 px-3 my-1 
-        font-medium rounded-md cursor-pointer 
-        transition-colors 
-        ${
-          active
-            ? 'bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800'
-            : 'hover:bg-indigo-50 text-gray-600'
-        }`}
+      className={`group relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors
+        ${active ? 'bg-sidebar-active text-activeTextColor' : 'hover:bg-sidebar-hover text-gray-600'}`}
     >
-      <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 text-indigo-600">
+      {/* color lives here and switches with `active` */}
+      <div
+        className={`flex-shrink-0 flex items-center justify-center w-8 h-8
+          ${active ? 'text-activeTextColor' : 'text-inactiveTextColor'}`}
+      >
         {icon}
       </div>
-      <span
-        className={`overflow-hidden transition-all duration-300 ease-in-out text-nowrap ${
-          expanded ? 'w-52 ml-3' : 'w-0 ml-0'
-        }`}
-      >
+
+      <span className={`overflow-hidden transition-all duration-300 ease-in-out text-nowrap ${expanded ? 'w-52 ml-3' : 'w-0 ml-0'}`}>
         {text}
       </span>
+
       {alert && (
-        <div
-          className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${
-            expanded ? '' : 'top-2'
-          }`}
-        />
+        <div className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${expanded ? '' : 'top-2'}`} />
       )}
+
       {!expanded && (
-        <Tooltip 
-          id={text} 
-          place="right" 
-          className="tooltip-style"
-          delayShow={300}
-          delayHide={100}
-        />
+        <Tooltip id={text} place="right" className="tooltip-style" delayShow={300} delayHide={100} />
       )}
     </li>
   );
 }
+

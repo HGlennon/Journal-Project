@@ -8,6 +8,7 @@ export const usersTable = sqliteTable('users', {
   password: text('password').notNull(),
   age: integer('age').notNull().default(18),
   hasAddedTask: integer('has_added_task').default(0),
+  theme: text('theme').notNull().default('default'), 
 });
 
 export const postsTable = sqliteTable('posts', {
