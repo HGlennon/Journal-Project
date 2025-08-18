@@ -1,14 +1,16 @@
 import { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import Sidebar from '@/components/sidebar/sidebar';
-import SessionWrapper from '@/components/SessionWrapper';
-import SidebarNavigation from '@/components/sidebar/sidebarNavigation';
+import { Geist_Mono } from "next/font/google";
+import SessionWrapper from '@/components/sessionWrapper';
 import "./main.css";
 import { ThemeProvider } from '@/components/themeProvider';
+import Script from "next/script";
+import { Inter } from "next/font/google";
+import AppShell from '@/components/appShell'; 
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -21,24 +23,26 @@ export const metadata: Metadata = {
   description: "My journal and to-do list application",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <head>
+        <Script id="theme-init" strategy="beforeInteractive">
+          {`(function(){
+            try {
+              var key='app:theme';
+              var t = localStorage.getItem(key);
+              var c = document.documentElement.classList;
+              c.remove('theme-dark','theme-pastel');
+              if (t && t !== 'default') c.add('theme-'+t);
+            } catch(e){}
+          })();`}
+        </Script>
+      </head>
+      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
         <SessionWrapper>
           <ThemeProvider>
-            <div className="flex h-screen w-full">
-              <Sidebar>
-                <SidebarNavigation />
-              </Sidebar>
-              <main className="flex-1 overflow-auto px-4 py-8 bg-main-background">
-                  {children}
-              </main>
-            </div>
+            <AppShell>{children}</AppShell>
           </ThemeProvider>
         </SessionWrapper>
       </body>

@@ -6,6 +6,8 @@ import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import type { AuthOptions } from "next-auth";
 
+type Theme = "default" | "dark" | "pastel";
+
 export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
@@ -32,26 +34,31 @@ export const authOptions: AuthOptions = {
           id: String(user.id),
           email: user.email,
           name: user.name,
-          theme: user.theme as "default" | "dark" | "pastel", // ✅ safe cast
+          theme: (user.theme as Theme) ?? "default",
         };
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
   callbacks: {
-    async jwt({ token, user }) {
+    // NOTE: include trigger + session so update({ theme }) can flow into the token
+    async jwt({ token, user, trigger, session }) {
       if (user) {
-        token.id = user.id;
+        token.id = (user as any).id;
         token.name = user.name;
-        token.theme = user.theme;
+        token.theme = (user as any).theme as Theme | undefined;
+      }
+      if (trigger === "update" && session?.theme) {
+        // coming from client: await update({ theme: t })
+        token.theme = session.theme as Theme;
       }
       return token;
     },
     async session({ session, token }) {
-      if (token?.id) session.user.id = token.id as string;
-      if (token?.theme) session.user.theme = token.theme;
+      if (token?.id) (session.user as any).id = token.id as string;
+      if (token?.theme !== undefined) {
+        (session.user as any).theme = token.theme as Theme;
+      }
       return session;
     },
   },

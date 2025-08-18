@@ -1,14 +1,13 @@
 'use client';
 
-import { ReactNode, useState, createContext, useContext, useEffect } from 'react';
-import { Tooltip } from 'react-tooltip'
+import React, { ReactNode, useState, createContext, useContext, useEffect, useRef } from 'react';
+import { Tooltip } from 'react-tooltip';
 import { ChevronFirst, ChevronLast, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
-import { signOut } from 'next-auth/react';
-import { useSession } from 'next-auth/react';
-import { useRef } from 'react';
+import { signOut, useSession } from 'next-auth/react';
 import SettingsModal from '@/components/settingModal';
 
+// Types
 
 interface SidebarItemProps {
   icon: ReactNode;
@@ -24,19 +23,64 @@ interface SidebarProps {
 interface SidebarContextType {
   expanded: boolean;
 }
-// lol
+
+type Theme = 'light' | 'dark' | 'pastel';
+
+const getAvatarColors = (theme: Theme) => {
+  switch (theme) {
+    case 'dark':
+      return { background: '334155', color: 'f8fafc' }; // slate + white
+    case 'pastel':
+      return { background: 'ffe4e6', color: '9d174d' }; // blush + deep rose
+    case 'light':
+    default:
+      return { background: 'f3e8ff', color: '1f2937' }; // lavender + dark gray
+  }
+};
+
 const SidebarContext = createContext<SidebarContextType>({ expanded: false });
+
+// Components
 
 export default function Sidebar({ children }: SidebarProps) {
   const [expanded, setExpanded] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [theme, setTheme] = useState<Theme>('light');
   const { data: session } = useSession();
-  const name = session?.user?.name;
+  const name = session?.user?.name ?? '';
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const firstLetter = name ? name.charAt(0) : '';  
 
+  // Detecting theme
+  const detectTheme = (): Theme => {
+    const cls = document.documentElement.classList;
+    if (cls.contains('theme-dark')) return 'dark';
+    if (cls.contains('theme-pastel')) return 'pastel';
+    return 'light';
+  };
+
+  useEffect(() => {
+    // Initial read
+    setTheme(detectTheme());
+
+    // React to future changes (e.g., user toggles theme)
+    const observer = new MutationObserver(() => setTheme(detectTheme()));
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const firstLetter = (name?.[0] || 'L').toUpperCase();
+  const { background, color } = getAvatarColors(theme);
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    firstLetter
+  )}&background=${background}&color=${color}&bold=true`;
+
+  // Resize UX 
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 600;
@@ -49,39 +93,42 @@ export default function Sidebar({ children }: SidebarProps) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const toggleSidebar = () => setExpanded(prev => !prev);
+  const toggleSidebar = () => setExpanded((prev) => !prev);
 
   useEffect(() => {
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
-      setDropdownOpen(false);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
     }
-  };
 
-  if (dropdownOpen) {
-    document.addEventListener('mousedown', handleClickOutside);
-  } else {
-    document.removeEventListener('mousedown', handleClickOutside);
-  }
-
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-  };
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [dropdownOpen]);
 
   const sidebarContent = (
     <nav className="h-full flex flex-col bg-sidebar">
-      <div ref={dropdownRef} className="relative p-4 pb-2 flex justify-between items-center">
+      <div
+        ref={dropdownRef}
+        className="relative p-4 pb-2 flex justify-between items-center"
+      >
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
           aria-expanded={dropdownOpen}
           className="flex items-center space-x-3 px-3 py-2 rounded-md cursor-pointer hover:bg-sidebar-hover aria-expanded:bg-sidebar-hover"
         >
           <Image
-            src={`https://ui-avatars.com/api/?name=${firstLetter}&background=c7d2fe&color=3730a3&bold=true`}
+            src={avatarUrl}
             alt="User Avatar"
             width={32}
             height={32}
@@ -91,7 +138,9 @@ export default function Sidebar({ children }: SidebarProps) {
 
           {expanded && (
             <div className="flex items-center gap-2 whitespace-nowrap overflow-hidden">
-              <h4 className="font-semibold truncate text-activeTextColor">{name}</h4>
+              <h4 className="font-semibold truncate text-activeTextColor">
+                {name || 'Login'}
+              </h4>
               <MoreVertical size={14} />
             </div>
           )}
@@ -125,6 +174,7 @@ export default function Sidebar({ children }: SidebarProps) {
           {expanded ? <ChevronFirst size={22} /> : <ChevronLast size={22} />}
         </button>
       </div>
+
       <SidebarContext.Provider value={{ expanded }}>
         <ul className="flex-1 px-3">{children}</ul>
       </SidebarContext.Provider>
@@ -154,22 +204,20 @@ export default function Sidebar({ children }: SidebarProps) {
       {/* Desktop sidebar (always rendered, collapsible width) */}
       {!isMobile && (
         <aside
-          className={`relative h-screen shrink-0 transition-all duration-300`}
-          style={{ width: expanded ? '17rem' : '8rem' }} // 64px or 256px
+          className="relative h-screen shrink-0 transition-all duration-300"
+          style={{ width: expanded ? '17rem' : '8rem' }}
         >
           {sidebarContent}
         </aside>
       )}
 
-      
-    {/* Settings modal goes here */}
-    {settingsOpen && (
-      <SettingsModal onClose={() => setSettingsOpen(false)} />
-    )}
-
+      {/* Settings modal */}
+      {settingsOpen && <SettingsModal onClose={() => setSettingsOpen(false)} />}
     </>
   );
 }
+
+// SIdebarItems 
 
 export function SidebarItem({ icon, text, active, alert }: SidebarItemProps) {
   const { expanded } = useContext(SidebarContext);
@@ -179,7 +227,7 @@ export function SidebarItem({ icon, text, active, alert }: SidebarItemProps) {
       className={`group relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors
         ${active ? 'bg-sidebar-active text-activeTextColor' : 'hover:bg-sidebar-hover text-gray-600'}`}
     >
-      {/* color lives here and switches with `active` */}
+      {/* icon color switches with `active` */}
       <div
         className={`flex-shrink-0 flex items-center justify-center w-8 h-8
           ${active ? 'text-activeTextColor' : 'text-inactiveTextColor'}`}
@@ -187,18 +235,31 @@ export function SidebarItem({ icon, text, active, alert }: SidebarItemProps) {
         {icon}
       </div>
 
-      <span className={`overflow-hidden transition-all duration-300 ease-in-out text-nowrap ${expanded ? 'w-52 ml-3' : 'w-0 ml-0'}`}>
+      <span
+        className={`overflow-hidden transition-all duration-300 ease-in-out text-nowrap ${
+          expanded ? 'w-52 ml-3' : 'w-0 ml-0'
+        }`}
+      >
         {text}
       </span>
 
       {alert && (
-        <div className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${expanded ? '' : 'top-2'}`} />
+        <div
+          className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${
+            expanded ? '' : 'top-2'
+          }`}
+        />
       )}
 
       {!expanded && (
-        <Tooltip id={text} place="right" className="tooltip-style" delayShow={300} delayHide={100} />
+        <Tooltip
+          id={text}
+          place="right"
+          className="tooltip-style"
+          delayShow={300}
+          delayHide={100}
+        />
       )}
     </li>
   );
 }
-

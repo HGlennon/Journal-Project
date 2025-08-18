@@ -359,7 +359,7 @@ function AccountTab() {
   );
 }
 
-import { useTheme } from './themeProvider';
+import { useTheme } from '@/components/themeProvider';
 
 function ThemesTab() {
   const { theme, setTheme } = useTheme();
