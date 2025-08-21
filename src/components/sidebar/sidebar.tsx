@@ -50,6 +50,7 @@ export default function Sidebar({ children }: SidebarProps) {
   const [theme, setTheme] = useState<Theme>('light');
   const { data: session } = useSession();
   const name = session?.user?.name ?? '';
+  const currentUserId = session?.user?.id ?? '';
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Detecting theme
@@ -123,9 +124,16 @@ export default function Sidebar({ children }: SidebarProps) {
         className="relative p-4 pb-2 flex justify-between items-center"
       >
         <button
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-          aria-expanded={dropdownOpen}
-          className="flex items-center space-x-3 px-3 py-2 rounded-md cursor-pointer hover:bg-sidebar-hover aria-expanded:bg-sidebar-hover"
+          onClick={() => {
+            if (!currentUserId) return;
+            setDropdownOpen(!dropdownOpen);
+          }}
+          aria-expanded={dropdownOpen && !!currentUserId}
+          disabled={!currentUserId}
+          className={`flex items-center space-x-3 px-3 py-2 rounded-md
+            ${currentUserId 
+              ? 'cursor-pointer hover:bg-sidebar-hover aria-expanded:bg-sidebar-hover' 
+              : 'cursor-not-allowed opacity-50'}`}
         >
           <Image
             src={avatarUrl}

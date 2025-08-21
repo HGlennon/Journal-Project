@@ -11,7 +11,7 @@ type TabKey = 'account' | 'theme';
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'account', label: 'Account' },
-  { key: 'theme', label: 'Theme' },
+  //{ key: 'theme', label: 'Theme' }, will be added later
 ];
 
 export default function SettingsModal({ onClose }: SettingsModalProps) {
@@ -67,70 +67,11 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
       <div
         ref={dialogRef}
         onClick={stop}
-        className="bg-white rounded-lg shadow-xl w-full max-w-5xl outline-none overflow-hidden flex"
+        className="bg-white rounded-lg shadow-xl w-full max-w-2xl outline-none overflow-hidden flex"
       >
-        {/* Sidebar */}
-        <aside className="w-64 border-r bg-gray-50 flex flex-col">
-          <div className="px-4 pt-4 pb-2 text-sm font-semibold text-gray-800">Settings</div>
-          <div className="px-4 pb-4 border-b">
-            <label htmlFor="settings-search" className="sr-only">Search settings</label>
-            <div className="relative">
-              <input
-                id="settings-search"
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search"
-                className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-              <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 text-gray-400"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-              </div>
-            </div>
-          </div>
-
-          <nav className="flex-1 overflow-auto p-2 space-y-1">
-            {TABS.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActive(tab.key)}
-                className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center gap-2
-                  ${active === tab.key
-                    ? 'bg-orange-100 text-orange-800 border border-orange-200'
-                    : 'text-gray-700 hover:bg-white/70'}`}
-              >
-                <span className="inline-block h-2 w-2 rounded-full bg-orange-500" />
-                {tab.label}
-              </button>
-            ))}
-
-            {query && (
-              <div className="mt-4 border-t pt-2">
-                {results.length === 0 ? (
-                  <p className="text-xs text-gray-500 px-2 py-1">No matches</p>
-                ) : (
-                  <ul className="space-y-1">
-                    {results.map((r) => (
-                      <li key={r.id}>
-                        <button
-                          onClick={() => jumpTo(r.id, r.tab)}
-                          className="w-full text-left text-sm px-2 py-1 rounded hover:bg-white"
-                        >
-                          {r.label}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
-          </nav>
-        </aside>
-
         {/* Content */}
         <main ref={contentRef} className="flex-1 overflow-auto p-6">
-          {active === 'account' && <AccountTab />}
-          {active === 'theme' && <ThemesTab />}
+          {active === 'account' && <AccountTab onClose={onClose} />}
         </main>
       </div>
     </div>
@@ -147,7 +88,11 @@ async function safeJson<T>(res: Response): Promise<T | null> {
   }
 }
 
-function AccountTab() {
+interface AccountTabProps {
+  onClose: () => void;
+}
+
+function AccountTab({ onClose }: AccountTabProps) {
   const { data: session, update } = useSession();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -343,14 +288,14 @@ function AccountTab() {
 
       {/* Footer actions */}
       <div className="flex items-center justify-end gap-3 border-t pt-4">
-        <button type="button" className="rounded-md border px-4 py-2 text-sm hover:bg-gray-50">
+        <button type="button" className="rounded-md border px-4 py-2 text-sm hover:bg-gray-50 cursor-pointer" onClick={onClose}>
           Cancel
         </button>
         <button
           type="button"
           onClick={saveProfile}
           disabled={saving}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700"
+          className="rounded-md bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700 cursor-pointer disabled:opacity-50"
         >
           {saving ? 'Saving…' : 'Save changes'}
         </button>
@@ -358,38 +303,3 @@ function AccountTab() {
     </div>
   );
 }
-
-import { useTheme } from '@/components/themeProvider';
-
-function ThemesTab() {
-  const { theme, setTheme } = useTheme();
-
-  const themes: {key: 'default' | 'dark' | 'pastel'; label: string}[] = [
-    { key: 'default', label: 'Default' },
-    { key: 'dark', label: 'Dark' },
-    { key: 'pastel', label: 'Pastel' },
-  ];
-
-  return (
-    <div className="max-w-md">
-      <h2 className="text-lg font-semibold mb-4">Themes</h2>
-      <div className="space-y-2">
-        {themes.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setTheme(t.key)}
-            className={`w-full flex justify-between items-center rounded-md border px-3 py-2 text-sm
-              ${theme === t.key
-                ? 'bg-indigo-100 text-indigo-800 border-indigo-200'
-                : 'hover:bg-gray-50 text-gray-700 border-gray-200'}`}
-          >
-            {t.label}
-            {theme === t.key && <span className="text-xs">✓</span>}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-
