@@ -1,15 +1,16 @@
+// app/layout.tsx (or wherever your RootLayout is)
 import { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
-import SessionWrapper from '@/components/sessionWrapper';
+import { Geist_Mono, Open_Sans } from "next/font/google";
+import SessionWrapper from "@/components/sessionWrapper";
 import "./main.css";
-import { ThemeProvider } from '@/components/themeProvider';
+import { ThemeProvider } from "@/components/themeProvider";
 import Script from "next/script";
-import { Inter } from "next/font/google";
-import AppShell from '@/components/appShell'; 
+import AppShell from "@/components/appShell";
 
-const inter = Inter({
+const openSans = Open_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["400", "600", "700"], 
+  variable: "--font-open-sans",
   display: "swap",
 });
 
@@ -39,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           })();`}
         </Script>
       </head>
-      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${openSans.className} ${geistMono.variable} antialiased`}>
         <SessionWrapper>
           <ThemeProvider>
             <AppShell>{children}</AppShell>

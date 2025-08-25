@@ -34,7 +34,7 @@ const getAvatarColors = (theme: Theme) => {
       return { background: 'ffe4e6', color: '9d174d' }; // blush + deep rose
     case 'light':
     default:
-      return { background: 'f3e8ff', color: '1f2937' }; // lavender + dark gray
+      return { background: 'ccfbf1', color: '065f46' }; // lavender + dark gray
   }
 };
 
@@ -117,79 +117,83 @@ export default function Sidebar({ children }: SidebarProps) {
     };
   }, [dropdownOpen]);
 
-  const sidebarContent = (
-    <nav className="h-full flex flex-col bg-sidebar">
-      <div
-        ref={dropdownRef}
-        className="relative p-4 pb-2 flex justify-between items-center"
+const sidebarContent = (
+  <nav className="h-full flex flex-col bg-sidebar">
+    <div
+      ref={dropdownRef}
+      className="relative p-3 pb-1 flex justify-between items-center"
+    >
+      {/* Profile button */}
+      <button
+        onClick={() => {
+          if (!currentUserId) return;
+          setDropdownOpen(!dropdownOpen);
+        }}
+        aria-expanded={dropdownOpen && !!currentUserId}
+        disabled={!currentUserId}
+        className={`flex items-center space-x-2 px-2 py-1.5 rounded-md text-sm
+          ${currentUserId 
+            ? 'cursor-pointer hover:bg-sidebar-hover aria-expanded:bg-sidebar-hover' 
+            : 'cursor-not-allowed opacity-50'}`}
       >
-        <button
-          onClick={() => {
-            if (!currentUserId) return;
-            setDropdownOpen(!dropdownOpen);
-          }}
-          aria-expanded={dropdownOpen && !!currentUserId}
-          disabled={!currentUserId}
-          className={`flex items-center space-x-3 px-3 py-2 rounded-md
-            ${currentUserId 
-              ? 'cursor-pointer hover:bg-sidebar-hover aria-expanded:bg-sidebar-hover' 
-              : 'cursor-not-allowed opacity-50'}`}
-        >
-          <Image
-            src={avatarUrl}
-            alt="User Avatar"
-            width={32}
-            height={32}
-            className="rounded-md"
-            unoptimized
-          />
+        <Image
+          src={avatarUrl}
+          alt="User Avatar"
+          width={32}
+          height={32}
+          className="rounded-md"
+          unoptimized
+        />
 
-          {expanded && (
-            <div className="flex items-center gap-2 whitespace-nowrap overflow-hidden">
-              <h4 className="font-semibold truncate text-activeTextColor">
-                {name || 'Login'}
-              </h4>
-              <MoreVertical size={14} />
-            </div>
-          )}
-        </button>
-
-        {dropdownOpen && (
-          <div className="absolute left-4 mt-31 w-73 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-            <button
-              onClick={() => {
-                setDropdownOpen(false);
-                setSettingsOpen(true);
-              }}
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              Settings
-            </button>
-            <button
-              onClick={() => signOut()}
-              className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-100"
-            >
-              Logout
-            </button>
+        {expanded && (
+          <div className="flex items-center gap-1.5 whitespace-nowrap overflow-hidden">
+            <h4 className="font-medium truncate text-activeTextColor text-base">
+              {name || 'Login'}
+            </h4>
+            <MoreVertical size={12} />
           </div>
         )}
-        <button
-          aria-label="Toggle sidebar"
-          aria-expanded={expanded}
-          onClick={() => setExpanded(!expanded)}
-          className="p-1.5 rounded-lg hover:bg-sidebar-hover text-textColor cursor-pointer"
-        >
-          {expanded ? <ChevronFirst size={22} /> : <ChevronLast size={22} />}
-        </button>
-      </div>
+      </button>
 
-      <SidebarContext.Provider value={{ expanded }}>
-        <ul className="flex-1 px-3">{children}</ul>
-      </SidebarContext.Provider>
-    </nav>
-  );
+      {/* Dropdown */}
+      {dropdownOpen && (
+        <div className="absolute left-3 mt-28 w-64 bg-white border border-gray-200 rounded-md shadow-lg z-10 text-sm">
+          <button
+            onClick={() => {
+              setDropdownOpen(false);
+              setSettingsOpen(true);
+            }}
+            className="w-full text-left px-3 py-1.5 hover:bg-gray-100"
+          >
+            Settings
+          </button>
+          <button
+            onClick={() => signOut()}
+            className="block w-full text-left px-3 py-1.5 text-red-600 hover:bg-red-100"
+          >
+            Logout
+          </button>
+        </div>
+      )}
 
-  return (
+      {/* Sidebar toggle */}
+      <button
+        aria-label="Toggle sidebar"
+        aria-expanded={expanded}
+        onClick={() => setExpanded(!expanded)}
+        className="p-1 rounded-md hover:bg-sidebar-hover text-textColor cursor-pointer"
+      >
+        {expanded ? <ChevronFirst size={20} /> : <ChevronLast size={20} />}
+      </button>
+    </div>
+
+    <SidebarContext.Provider value={{ expanded }}>
+      <ul className="flex-1 px-2">{children}</ul>
+    </SidebarContext.Provider>
+  </nav>
+);
+
+return (
     <>
       {/* Mobile open button */}
       {isMobile && !expanded && (
@@ -245,7 +249,7 @@ export function SidebarItem({ icon, text, active, alert }: SidebarItemProps) {
 
       <span
         className={`overflow-hidden transition-all duration-300 ease-in-out text-nowrap ${
-          expanded ? 'w-52 ml-3' : 'w-0 ml-0'
+          expanded ? 'w-52 ml-3 text-base' : 'w-0 ml-0'
         }`}
       >
         {text}

@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
-
-/* Default (Light theme) */
 @theme {
-  --color-sidebar: #F3E8FF;
+  --font-sans: var(--font-open-sans);
+
+  --color-sidebar: #EDE9FE;
   --color-main-background: #FEF9F9;
   --color-sidebar-hover: #dcdce2;
   --color-sidebar-active: #c8c8d0;
@@ -11,7 +11,6 @@
   --color-activeTextColor: #1f2937;
 }
 
-/* Dark theme */
 .theme-dark {
   --color-sidebar: #1E293B;
   --color-main-background: #0F172A;
@@ -21,7 +20,6 @@
   --color-activeTextColor: #F8FAFC;
 }
 
-/* Pastel theme */
 .theme-pastel {
   --color-sidebar: #FFE4E6;
   --color-main-background: #FFF1F2;

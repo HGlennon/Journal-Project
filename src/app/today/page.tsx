@@ -10,7 +10,7 @@ export default async function TodayPage() {
   const userId = await getCurrentUserId();
   if (!userId) redirect('/login'); 
 
-  const today = new Date().toLocaleDateString('en-CA'); // 'YYYY-MM-DD'
+  const today = new Date().toLocaleDateString('en-CA');
 
   const tasksDueToday = await db
     .select()

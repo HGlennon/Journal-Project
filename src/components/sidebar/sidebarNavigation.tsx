@@ -18,7 +18,7 @@ export default function SidebarNavigation() {
         data-tooltip-id="Inbox" 
         data-tooltip-content="Inbox"
       >
-        <SidebarItem icon={<FaEnvelope size={20} />} text="Inbox" active={pathname === "/inbox"} />
+        <SidebarItem icon={<FaEnvelope size={18} />} text="Inbox" active={pathname === "/inbox"} />
       </Link>
 
       <Link 
@@ -36,7 +36,7 @@ export default function SidebarNavigation() {
         data-tooltip-id="Completed" 
         data-tooltip-content="Completed"
       >
-        <SidebarItem icon={<SiTicktick size={20} />} text="Completed" active={pathname === "/completed"} />
+        <SidebarItem icon={<SiTicktick size={18} />} text="Completed" active={pathname === "/completed"} />
       </Link>
     </>
   );

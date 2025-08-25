@@ -39,9 +39,8 @@ export function TodayClient({ initialTasks }: Props) {
         const newTask = await addTask(formData);
         if (!newTask) throw new Error('Failed to add task');
 
-        const today = new Date().toLocaleDateString('en-CA'); // 'YYYY-MM-DD'
+        const today = new Date().toLocaleDateString('en-CA');
 
-        // ✅ Only show task if dueDate matches today
         if (newTask.dueDate === today) {
           setTasks(prev => [newTask, ...prev]);
         }
