@@ -93,25 +93,26 @@ export function InboxClient({ initialTasks }: Props) {
           {tasks.map((task) => (
             <div
               key={task.id}
-              className="border p-3 rounded flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 w-full"
+              className="border p-4 rounded-lg flex items-start gap-3 w-full"
             >
+              {/* Circle button */}
               <button
                 onClick={() => handleComplete(task.id)}
-                className="w-8 h-8 border-2 border-green-500 rounded-full flex items-center justify-center group hover:bg-green-100 disabled:opacity-50"
+                className="w-7 h-7 flex-shrink-0 border-2 border-gray-500 rounded-full flex items-center justify-center group hover:bg-green-100 disabled:opacity-50"
                 disabled={isPending}
               >
-                <span className="text-green-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <span className="text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   ✓
                 </span>
               </button>
 
-              <div className="flex-1">
-                <div className="font-medium">{task.task}</div>
+              {/* Task text block */}
+              <div className="flex flex-col">
+                <div className="font-medium leading-tight">{task.task}</div>
                 <div className="text-sm text-gray-500">Due: {task.dueDate}</div>
               </div>
             </div>
           ))}
-
           <form
             ref={formRef}
             onSubmit={handleAddTask}
@@ -133,14 +134,14 @@ export function InboxClient({ initialTasks }: Props) {
             <div className="flex flex-col sm:flex-row gap-2">
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+                className="bg-[#BBB3DB] text-[#303030] text-sm font-bold px-4 py-2 rounded w-full sm:w-auto"
                 disabled={isPending}
               >
                 {isPending ? 'Adding...' : 'Add Task'}
               </button>
               <button
                 type="button"
-                className="bg-gray-500 text-white px-4 py-2 rounded w-full sm:w-auto"
+                className="bg-[#6F7C8B] text-white text-sm font-bold px-4 py-2 rounded w-full sm:w-auto"
                 disabled={isPending}
                 onClick={() => setShowForm(false)}
               >

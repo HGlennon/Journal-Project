@@ -29,12 +29,12 @@ type Theme = 'light' | 'dark' | 'pastel';
 const getAvatarColors = (theme: Theme) => {
   switch (theme) {
     case 'dark':
-      return { background: '334155', color: 'f8fafc' }; // slate + white
+      return { background: '334155', color: 'f8fafc' }; // avatar background + text colours
     case 'pastel':
-      return { background: 'ffe4e6', color: '9d174d' }; // blush + deep rose
+      return { background: 'ffe4e6', color: '9d174d' }; 
     case 'light':
     default:
-      return { background: 'ccfbf1', color: '065f46' }; // lavender + dark gray
+      return { background: 'afabbd', color: '3b3636' };
   }
 };
 
