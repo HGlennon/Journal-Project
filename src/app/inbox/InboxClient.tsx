@@ -93,12 +93,12 @@ export function InboxClient({ initialTasks }: Props) {
           {tasks.map((task) => (
             <div
               key={task.id}
-              className="border p-4 rounded-lg flex items-start gap-3 w-full"
+              className="border p-2 rounded-lg flex items-start gap-3 w-full"
             >
               {/* Circle button */}
               <button
                 onClick={() => handleComplete(task.id)}
-                className="w-7 h-7 flex-shrink-0 border-2 border-gray-500 rounded-full flex items-center justify-center group hover:bg-green-100 disabled:opacity-50"
+                className="w-6 h-6 mt-1.5 flex-shrink-0 border-2 border-gray-500 rounded-full flex items-center justify-center group hover:bg-green-100 disabled:opacity-50"
                 disabled={isPending}
               >
                 <span className="text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -116,21 +116,21 @@ export function InboxClient({ initialTasks }: Props) {
           <form
             ref={formRef}
             onSubmit={handleAddTask}
-            className="space-y-2 mt-6"
+            className="border border-black p-4 rounded-lg space-y-2 mt-4"
           >
             <input
               name="task"
               type="text"
               required
               placeholder="Task name"
-              className="border p-2 w-full text-sm"
+              className="border p-2 w-full text-sm rounded"
             />
             <input
               name="dueDate"
               type="date"
               required
-              className="border p-2 w-full text-sm cursor-text"
-            />
+              className="border p-2 w-full text-sm rounded cursor-text text-black placeholder-gray-500"
+            /> 
             <div className="flex flex-col sm:flex-row gap-2">
               <button
                 type="submit"

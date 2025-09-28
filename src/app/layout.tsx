@@ -6,6 +6,7 @@ import "./main.css";
 import { ThemeProvider } from "@/components/themeProvider";
 import Script from "next/script";
 import AppShell from "@/components/appShell";
+import { inter } from '@/app/ui/fonts';
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           })();`}
         </Script>
       </head>
-      <body className={`${openSans.className} ${geistMono.variable} antialiased`}>
+        <body className={`${inter.className} antialiased`}>
         <SessionWrapper>
           <ThemeProvider>
             <AppShell>{children}</AppShell>
