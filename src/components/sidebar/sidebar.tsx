@@ -121,7 +121,7 @@ const sidebarContent = (
   <nav className="h-full flex flex-col bg-sidebar">
     <div
       ref={dropdownRef}
-      className="relative p-3 pb-1 flex justify-between items-center"
+      className="relative flex items-center justify-between px-3 py-1.5 mt-1.5"
     >
       {/* Profile button */}
       <button
@@ -131,7 +131,7 @@ const sidebarContent = (
         }}
         aria-expanded={dropdownOpen && !!currentUserId}
         disabled={!currentUserId}
-        className={`flex items-center space-x-2 px-2 py-1.5 rounded-md text-sm
+        className={`flex items-center pl-1 pr-3 py-1.5 rounded-md text-sm
           ${currentUserId 
             ? 'cursor-pointer hover:bg-sidebar-hover aria-expanded:bg-sidebar-hover' 
             : 'cursor-not-allowed opacity-50'}`}
@@ -141,7 +141,7 @@ const sidebarContent = (
           alt="User Avatar"
           width={32}
           height={32}
-          className="rounded-md"
+          className="rounded-md w-7 h-7 mr-4 flex-shrink-0"
           unoptimized
         />
 
@@ -188,7 +188,7 @@ const sidebarContent = (
     </div>
 
     <SidebarContext.Provider value={{ expanded }}>
-      <ul className="flex-1 px-2">{children}</ul>
+      <ul className="flex-1">{children}</ul>
     </SidebarContext.Provider>
   </nav>
 );
@@ -236,7 +236,7 @@ export function SidebarItem({ icon, text, active, alert }: SidebarItemProps) {
 
   return (
     <li
-      className={`group relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors
+      className={`group relative flex items-center w-full py-1.5 px-3 my-0.5 font-medium rounded-md cursor-pointer transition-colors
         ${active ? 'bg-sidebar-active text-activeTextColor' : 'hover:bg-sidebar-hover text-gray-600'}`}
     >
       {/* icon color switches with `active` */}

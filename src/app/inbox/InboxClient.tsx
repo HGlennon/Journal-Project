@@ -108,7 +108,7 @@ export function InboxClient({ initialTasks }: Props) {
 
               {/* Task text block */}
               <div className="flex flex-col">
-                <div className="font-medium leading-tight">{task.task}</div>
+                <div className="text-[16px] leading-tight">{task.task}</div>
                 <div className="text-sm text-gray-500">Due: {task.dueDate}</div>
               </div>
             </div>
