@@ -1,16 +1,34 @@
-import React from 'react';
+import React from "react";
 
-const CalendarDateIcon: React.FC = () => {
+interface CalendarDateIconProps {
+  active?: boolean;
+}
+
+const CalendarDateIcon: React.FC<CalendarDateIconProps> = ({ active = false }) => {
   const today = new Date();
   const day = today.getDate();
 
-  return (
-    <div className="w-5 h-5 rounded-sm border border-gray-600 bg-gray-600 text-center text-[10px] font-semibold text-gray-800 flex flex-col overflow-hidden shadow-sm relative">
-      {/* Divider line slightly above the date */}
-      <div className="absolute top-[4px] mx-auto left-0 right-0 w-4 h-[1px] bg-gray-400" />
+  const borderColor = active ? "#1f2937" : "#666576";
+  const bgColor = active ? "#1f2937" : "#666576";
+  const lineColor = active ? "#7a7a88" : "#2c3a50";
+  const textColor = active ? "#7a7a88" : "#2c3a50";
 
-      <div className="flex-1 flex items-center justify-center text-[10px] font-bold pt-[2px]">
-        {day}
+  return (
+    <div
+      className="w-5 h-5 flex flex-col rounded-sm shadow-sm overflow-hidden"
+      style={{ border: `1px solid ${borderColor}`, backgroundColor: bgColor }}
+    >
+      <div
+        className="h-[1px] mx-[2px] mt-[4px]"
+        style={{ backgroundColor: lineColor }}
+      />
+      <div className="flex-1 flex items-center justify-center">
+        <span
+          className="text-[9px] font-bold leading-none"
+          style={{ color: textColor }}
+        >
+          {day}
+        </span>
       </div>
     </div>
   );

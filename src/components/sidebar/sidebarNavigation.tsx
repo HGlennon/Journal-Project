@@ -27,7 +27,7 @@ export default function SidebarNavigation() {
         data-tooltip-id="Today" 
         data-tooltip-content="Today"
       >
-        <SidebarItem icon={<CalendarDateIcon />} text="Today" active={pathname === "/today"} />
+        <SidebarItem icon={<CalendarDateIcon active={pathname === "/today"} />} text="Today" active={pathname === "/today"} />
       </Link>
 
       <Link 

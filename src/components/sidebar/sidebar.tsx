@@ -121,7 +121,7 @@ const sidebarContent = (
   <nav className="h-full flex flex-col bg-sidebar">
     <div
       ref={dropdownRef}
-      className="relative flex items-center justify-between px-3 py-1.5 mt-1.5"
+      className="relative flex items-center justify-between px-3 py-1.5 mt-2"
     >
       {/* Profile button */}
       <button
@@ -188,7 +188,7 @@ const sidebarContent = (
     </div>
 
     <SidebarContext.Provider value={{ expanded }}>
-      <ul className="flex-1">{children}</ul>
+      <ul className="flex-1 flex-col gap-y-1">{children}</ul>
     </SidebarContext.Provider>
   </nav>
 );
@@ -217,7 +217,7 @@ return (
       {!isMobile && (
         <aside
           className="relative h-screen shrink-0 transition-all duration-300"
-          style={{ width: expanded ? '17rem' : '8rem' }}
+          style={{ width: expanded ? '17rem' : '6rem' }}
         >
           {sidebarContent}
         </aside>
@@ -236,7 +236,7 @@ export function SidebarItem({ icon, text, active, alert }: SidebarItemProps) {
 
   return (
     <li
-      className={`group relative flex items-center w-full py-1.5 px-3 my-0.5 font-medium rounded-md cursor-pointer transition-colors
+      className={`group relative flex items-center w-full py-1.5 px-3 font-medium rounded-md cursor-pointer transition-colors
         ${active ? 'bg-sidebar-active text-activeTextColor' : 'hover:bg-sidebar-hover text-gray-600'}`}
     >
       {/* icon color switches with `active` */}
@@ -248,9 +248,12 @@ export function SidebarItem({ icon, text, active, alert }: SidebarItemProps) {
       </div>
 
       <span
-        className={`overflow-hidden transition-all duration-300 ease-in-out text-nowrap ${
-          expanded ? 'w-52 ml-3 text-base' : 'w-0 ml-0'
-        }`}
+        className={`
+          whitespace-nowrap text-base
+          ${active ? 'text-activeTextColor' : 'text-inactiveTextColor'}
+          transition-all duration-200 ease-in-out
+          ${expanded ? 'opacity-100 ml-3 translate-x-0' : 'opacity-0 ml-0 -translate-x-2'}
+        `}
       >
         {text}
       </span>
