@@ -133,13 +133,15 @@ export function InboxClient({ initialTasks }: Props) {
                 type="text"
                 required
                 placeholder="Task name"
-                className="border p-2 w-full text-sm rounded"
+                className="border p-2 w-full text-sm rounded text-black placeholder-gray-500
+                 focus:outline-none focus:ring-2 focus:ring-[#BBB3DB] focus:border-[#BBB3DB]"              
               />
               <input
                 name="dueDate"
                 type="date"
                 required
-                className="border p-2 w-full text-sm rounded cursor-text text-black placeholder-gray-500"
+                className="border p-2 w-full text-sm rounded text-black placeholder-gray-500
+                 focus:outline-none focus:ring-2 focus:ring-[#BBB3DB] focus:border-[#BBB3DB]"              
               />
               <div className="flex flex-col sm:flex-row gap-2">
                 <button

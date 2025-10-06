@@ -72,7 +72,7 @@ export default function AuthModal() {
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-md bg-[#fff] rounded-lg shadow-lg p-6 space-y-4 border border-[#BBB3DB]">
+      <div className="w-full max-w-md bg-[#fff] rounded-lg shadow-lg p-6 space-y-4 border border-[#BBB3DB] -translate-y-12">
         {/* Header */}
         <h2 className="text-2xl font-bold text-center text-[#303030]">
           {isLogin ? 'Welcome back!' : 'Create your account'}
@@ -132,9 +132,7 @@ export default function AuthModal() {
           <button
             type="submit"
             disabled={submitDisabled}
-            className={`w-full rounded-md px-4 py-2 text-sm font-bold ${
-              isLogin ? 'bg-[#BBB3DB] text-[#303030]' : 'bg-[#BBB3DB] text-[#303030]'
-            } hover:bg-[#A69DD6] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
+            className="w-full rounded-md px-4 py-2 text-sm font-bold cursor-pointer bg-[#BBB3DB] text-[#303030] hover:bg-[#A69DD6] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {submitting && (
               <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin inline-block" />
@@ -150,7 +148,7 @@ export default function AuthModal() {
               Don&apos;t have an account?{' '}
               <button
                 onClick={() => setIsLogin(false)}
-                className="text-[#6F7C8B] underline hover:text-[#5a6570]"
+                className="text-[#6F7C8B] cursor-pointer hover:text-[#5a6570]"
               >
                 Register here
               </button>
@@ -160,7 +158,7 @@ export default function AuthModal() {
               Already have an account?{' '}
               <button
                 onClick={() => setIsLogin(true)}
-                className="text-[#BBB3DB] underline hover:text-[#5a6570]"
+                className="text-[#BBB3DB] cursor-pointer hover:text-[#5a6570]"
               >
                 Login here
               </button>
