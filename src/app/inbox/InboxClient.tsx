@@ -81,7 +81,7 @@ export function InboxClient({ initialTasks }: Props) {
           </p>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-[#BBB3DB] text-[#303030] font-bold px-5 py-2.5 rounded-lg hover:bg-gray-500 transition-colors duration-200 mt-4 cursor-pointer"
+            className="bg-[#BBB3DB]  text-[#303030] font-bold px-5 py-2.5 rounded-lg hover:bg-[#c8bfe7] transition-colors duration-200 mt-4 cursor-pointer"
           >
             Add task
           </button>
@@ -116,7 +116,7 @@ export function InboxClient({ initialTasks }: Props) {
             <button
               type="button"
               onClick={() => setShowForm(true)}
-              className="bg-[#BBB3DB] text-[#303030] text-sm font-bold px-4 py-2 rounded w-full sm:w-auto"
+              className="bg-[#BBB3DB] hover:bg-[#c8bfe7] cursor-pointer text-[#303030] text-sm font-bold px-4 py-2 rounded w-full sm:w-auto"
             >
               Add Task
             </button>
@@ -146,14 +146,14 @@ export function InboxClient({ initialTasks }: Props) {
               <div className="flex flex-col sm:flex-row gap-2">
                 <button
                   type="submit"
-                  className="bg-[#BBB3DB] text-[#303030] text-sm font-bold px-4 py-2 rounded w-full sm:w-auto"
+                  className="bg-[#BBB3DB] hover:bg-[#c6bee4] cursor-pointer text-[#303030] text-sm font-bold px-4 py-2 rounded w-full sm:w-auto"
                   disabled={isPending}
                 >
                   {isPending ? "Adding..." : "Add Task"}
                 </button>
                 <button
                   type="button"
-                  className="bg-[#6F7C8B] text-white text-sm font-bold px-4 py-2 rounded w-full sm:w-auto"
+                  className="bg-[#6F7C8B] hover:bg-[#5d6975] cursor-pointer text-white text-sm font-bold px-4 py-2 rounded w-full sm:w-auto"
                   onClick={() => setShowForm(false)}
                   disabled={isPending}
                 >

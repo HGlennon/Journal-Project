@@ -71,7 +71,7 @@ export function TodayClient({ initialTasks }: Props) {
   }
 
   return (
-    <div className="px-4 py-8 transition-all max-w-4xl mx-auto lg:ml-64">
+    <div className="px-4 py-8 transition-all max-w-4xl mx-auto lg:ml-100">
       <h1 className="text-3xl font-bold">
         Today
       </h1>
@@ -84,7 +84,7 @@ export function TodayClient({ initialTasks }: Props) {
           <p>You can schedule tasks for today below.</p>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-gray-400 text-white px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors duration-200 mt-4 cursor-pointer"
+            className="bg-[#BBB3DB]  text-[#303030] font-bold px-5 py-2.5 rounded-lg hover:bg-[#c8bfe7] transition-colors duration-200 mt-4 cursor-pointer"
           >
             Add task
           </button>
@@ -96,65 +96,82 @@ export function TodayClient({ initialTasks }: Props) {
           {tasks.map((task) => (
             <div
               key={task.id}
-              className="border p-3 rounded flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 w-full"
+              className="border p-2 rounded-lg flex items-start gap-3 w-full"
             >
               <button
                 onClick={() => handleComplete(task.id)}
-                className="w-8 h-8 border-2 border-green-500 rounded-full flex items-center justify-center group hover:bg-green-100 disabled:opacity-50"
+                className="w-6 h-6 mt-1.5 flex-shrink-0 border-2 border-gray-500 rounded-full flex items-center justify-center group hover:bg-[#F0ECFF] disabled:opacity-50"
                 disabled={isPending}
               >
-                <span className="text-green-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <span className="text-[#666576] opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   ✓
                 </span>
               </button>
 
-              <div className="flex-1">
-                <div className="font-medium">{task.task}</div>
+              <div className="flex flex-col">
+                <div className="text-[16px] leading-tight">{task.task}</div>
                 <div className="text-sm text-gray-500">Due: {task.dueDate}</div>
               </div>
             </div>
           ))}
 
-          <form 
-            ref={formRef}
-            onSubmit={handleAddTask} 
-            className="space-y-2 mt-6"
-          >
-            <input
-              name="task"
-              type="text"
-              required
-              placeholder="Task name"
-              className="border p-2 w-full"
-            />
-            <input
-              name="dueDate"
-              type="date"
-              required
-              className="border p-2 w-full cursor-text"
-              defaultValue={new Date().toISOString().split('T')[0]} // today's date
-            />
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
-                disabled={isPending}
-              >
-                {isPending ? 'Adding...' : 'Add Task'}
-              </button>
-              <button
-                type="button"
-                className="bg-gray-500 text-white px-4 py-2 rounded cursor-pointer"
-                disabled={isPending}
-                onClick={() => setShowForm(false)}
-              >
-                Cancel
-              </button>
-            </div>
-            {error && (
-              <p className="text-red-500 text-sm mt-2">{error}</p>
-            )}
-          </form>
+          {!showForm && (
+            <button
+              type="button"
+              onClick={() => setShowForm(true)}
+              className="bg-[#BBB3DB] hover:bg-[#c8bfe7] cursor-pointer text-[#303030] text-sm font-bold px-4 py-2 rounded w-full sm:w-auto"
+            >
+              Add Task
+            </button>
+          )}
+
+          {showForm && (
+<form
+  ref={formRef}
+  onSubmit={handleAddTask}
+  className="border border-black p-4 rounded-lg space-y-2 mt-2"
+>
+  <input
+    name="task"
+    type="text"
+    required
+    placeholder="Task name"
+    className="border p-2 w-full text-sm rounded text-black placeholder-gray-500
+     focus:outline-none focus:ring-2 focus:ring-[#BBB3DB] focus:border-[#BBB3DB]"              
+  />
+
+  <input
+    name="dueDate"
+    type="date"
+    required
+    // ✅ Auto-fill today's date
+    defaultValue={new Date().toISOString().split('T')[0]}
+    className="border p-2 w-full text-sm rounded text-black placeholder-gray-500
+     focus:outline-none focus:ring-2 focus:ring-[#BBB3DB] focus:border-[#BBB3DB]"              
+  />
+
+  <div className="flex flex-col sm:flex-row gap-2">
+    <button
+      type="submit"
+      className="bg-[#BBB3DB] hover:bg-[#c6bee4] cursor-pointer text-[#303030] text-sm font-bold px-4 py-2 rounded w-full sm:w-auto"
+      disabled={isPending}
+    >
+      {isPending ? "Adding..." : "Add Task"}
+    </button>
+    <button
+      type="button"
+      className="bg-[#6F7C8B] hover:bg-[#5d6975] cursor-pointer text-white text-sm font-bold px-4 py-2 rounded w-full sm:w-auto"
+      onClick={() => setShowForm(false)}
+      disabled={isPending}
+    >
+      Cancel
+    </button>
+  </div>
+
+  {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+</form>
+
+          )}
         </div>
       )}
     </div>

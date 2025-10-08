@@ -15,7 +15,7 @@ export function CompletedClient({ initialCompletedTasks }: Props) {
   const [isPending] = useTransition();
 
   return (
-    <div className="px-4 py-8 transition-all max-w-4xl mx-auto lg:ml-64">
+    <div className="px-4 py-8 transition-all max-w-4xl mx-auto lg:ml-100">
       <h1 className="text-3xl font-bold">
         Completed
       </h1>
@@ -31,24 +31,22 @@ export function CompletedClient({ initialCompletedTasks }: Props) {
           {tasks.map((task) => (
             <div
               key={task.id}
-              className="border p-3 rounded flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 w-full"
+              className="border p-2 rounded-lg flex items-start gap-3 w-full"
             >
               <button
                 //onClick={() => handleUndoComplete(task.id)} LEAVING THIS OUT FOR NOW
-                className="w-8 h-8 border-2 border-green-500 rounded-full flex items-center justify-center group"
+                className="w-6 h-6 mt-1.5 flex-shrink-0 border-2 border-gray-500 rounded-full flex items-center justify-center group bg-[#F0ECFF] disabled:opacity-50"
                 disabled={isPending}
               >
-                <span className="text-green-500 opacity-100 transition-opacity duration-200">
+                <span className="text-[#666576] opacity-100 transition-opacity duration-200">
                   ✓
                 </span>
               </button>
 
               {/* Task content */}
-              <div className="flex-1">
-                <div className="font-medium text-gray-500">
-                  {task.task}
-                </div>
-                <div className="text-sm text-gray-400">Due: {task.dueDate}</div>
+              <div className="flex flex-col">
+                <div className="text-[16px] leading-tight">{task.task}</div>
+                <div className="text-sm text-gray-500">Due: {task.dueDate}</div>
               </div>
             </div>
           ))}

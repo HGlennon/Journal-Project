@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
 
@@ -9,33 +9,10 @@ interface SettingsModalProps {
 
 type TabKey = 'account' | 'theme';
 
-const TABS: { key: TabKey; label: string }[] = [
-  { key: 'account', label: 'Account' },
-  //{ key: 'theme', label: 'Theme' }, will be added later
-];
-
 export default function SettingsModal({ onClose }: SettingsModalProps) {
-  const [active, setActive] = useState<TabKey>('account');
-  const [query, setQuery] = useState('');
+  const [active] = useState<TabKey>('account');
   const dialogRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-
-  const searchIndex = useMemo(
-    () => [
-      { id: 'account-profile-picture', label: 'Photo', tab: 'account' as TabKey },
-      { id: 'account-name', label: 'Name', tab: 'account' as TabKey },
-      { id: 'account-email', label: 'Email', tab: 'account' as TabKey },
-      { id: 'account-password', label: 'Password', tab: 'account' as TabKey },
-      { id: 'account-delete', label: 'Delete account', tab: 'account' as TabKey },
-    ],
-    []
-  );
-
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [] as typeof searchIndex;
-    return searchIndex.filter((item) => item.label.toLowerCase().includes(q));
-  }, [query, searchIndex]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -47,16 +24,6 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
 
   const stop = (e: React.MouseEvent) => e.stopPropagation();
 
-  const jumpTo = (id: string, tab: TabKey) => {
-    setActive(tab);
-    requestAnimationFrame(() => {
-      const el = document.getElementById(id);
-      if (el && contentRef.current) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  };
-
   return (
     <div
       onClick={onClose}
@@ -67,10 +34,9 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
       <div
         ref={dialogRef}
         onClick={stop}
-        className="bg-white rounded-lg shadow-xl w-full max-w-2xl outline-none overflow-hidden flex"
+        className="bg-white rounded-2xl shadow-lg w-full max-w-xl outline-none overflow-hidden flex border border-[#e8e8ee]"
       >
-        {/* Content */}
-        <main ref={contentRef} className="flex-1 overflow-auto p-6">
+        <main ref={contentRef} className="flex-1 overflow-auto p-5 sm:p-6">
           {active === 'account' && <AccountTab onClose={onClose} />}
         </main>
       </div>
@@ -108,7 +74,7 @@ function AccountTab({ onClose }: AccountTabProps) {
     (async () => {
       const res = await fetch('/api/me', { cache: 'no-store' });
       if (res.ok) {
-        const u = await res.json().catch(() => null) as { name?: string; email?: string } | null;
+        const u = (await res.json().catch(() => null)) as { name?: string; email?: string } | null;
         if (u) {
           setName(u.name ?? '');
           setEmail(u.email ?? '');
@@ -190,14 +156,14 @@ function AccountTab({ onClose }: AccountTabProps) {
   };
 
   return (
-    <div className="max-w-2xl">
-      <div className="mb-6">
+    <div className="max-w-xl space-y-4 text-[#303030]">
+      <div>
         <h2 className="text-lg font-semibold">Account</h2>
         <p className="text-sm text-gray-500">Signed in as {session?.user?.email}</p>
       </div>
 
       {/* Name */}
-      <section id="account-name" className="space-y-2 py-6 border-b">
+      <section id="account-name" className="space-y-2 py-4 border-b border-gray-200">
         <h3 className="font-semibold">Name</h3>
         <div className="max-w-md">
           <input
@@ -205,14 +171,14 @@ function AccountTab({ onClose }: AccountTabProps) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Your name"
-            className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm text-[#303030]
+              focus:outline-none focus:ring-2 focus:ring-[#BBB3DB]"
           />
-          <div className="mt-1 text-xs text-gray-400 text-right">{name.length}/255</div>
         </div>
       </section>
 
       {/* Email */}
-      <section id="account-email" className="space-y-2 py-6 border-b">
+      <section id="account-email" className="space-y-2 py-4 border-b border-gray-200">
         <h3 className="font-semibold">Email</h3>
         <div className="max-w-md">
           <input
@@ -220,13 +186,14 @@ function AccountTab({ onClose }: AccountTabProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
-            className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm text-[#303030]
+              focus:outline-none focus:ring-2 focus:ring-[#BBB3DB]"
           />
         </div>
       </section>
 
       {/* Password */}
-      <section id="account-password" className="space-y-2 py-6 border-b">
+      <section id="account-password" className="space-y-2 py-4 border-b border-gray-200">
         <h3 className="font-semibold">Password</h3>
         <div className="max-w-md space-y-2">
           <input
@@ -234,28 +201,31 @@ function AccountTab({ onClose }: AccountTabProps) {
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             placeholder="Current password"
-            className="w-full rounded-md border px-3 py-2 text-sm"
+            className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm text-[#303030]
+              focus:outline-none focus:ring-2 focus:ring-[#BBB3DB]"
           />
           <input
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             placeholder="New password"
-            className="w-full rounded-md border px-3 py-2 text-sm"
+            className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm text-[#303030]
+              focus:outline-none focus:ring-2 focus:ring-[#BBB3DB]"
           />
           <button
             type="button"
             onClick={changePassword}
             disabled={changingPw || !currentPassword || !newPassword}
-            className="rounded-md border px-3 py-1.5 text-sm bg-white hover:bg-gray-50"
+            className="rounded-md bg-[#BBB3DB] hover:bg-[#A69DD6] cursor-pointer text-[#303030] text-sm font-bold px-4 py-1.5
+              disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {changingPw ? 'Changing…' : 'Change password'}
+            {changingPw ? 'Changing…' : 'Change Password'}
           </button>
         </div>
       </section>
 
       {/* Delete account */}
-      <section id="account-delete" className="space-y-3 py-6">
+      <section id="account-delete" className="space-y-2 py-4">
         <h3 className="font-semibold text-red-700">Delete account</h3>
         <p className="text-sm text-gray-600">
           This will permanently delete your account. Your posts will be removed, and tasks will be retained but detached from your account.
@@ -270,36 +240,43 @@ function AccountTab({ onClose }: AccountTabProps) {
             value={confirmEmail}
             onChange={(e) => setConfirmEmail(e.target.value)}
             placeholder={accountEmail || 'you@example.com'}
-            className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm text-[#303030]
+              focus:outline-none focus:ring-2 focus:ring-red-500"
           />
           <button
             type="button"
             onClick={deleteAccount}
             disabled={deleting || confirmEmail !== accountEmail || !accountEmail}
-            className={`rounded-md px-3 py-2 text-sm border
-              ${confirmEmail === accountEmail && accountEmail && !deleting
-                ? 'bg-red-600 text-white hover:bg-red-700 border-red-700'
-                : 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'}`}
+            className={`rounded-md px-4 py-1.5 text-sm font-bold cursor-pointer w-full sm:w-auto
+              ${
+                confirmEmail === accountEmail && accountEmail && !deleting
+                  ? 'bg-red-600 text-white hover:bg-red-700'
+                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              }`}
           >
             {deleting ? 'Deleting…' : 'Delete account'}
           </button>
         </div>
       </section>
 
-      {/* Footer actions */}
-      <div className="flex items-center justify-end gap-3 border-t pt-4">
-        <button type="button" className="rounded-md border px-4 py-2 text-sm hover:bg-gray-50 cursor-pointer" onClick={onClose}>
-          Cancel
-        </button>
-        <button
-          type="button"
-          onClick={saveProfile}
-          disabled={saving}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700 cursor-pointer disabled:opacity-50"
-        >
-          {saving ? 'Saving…' : 'Save changes'}
-        </button>
-      </div>
+{/* Footer actions */}
+<div className="flex items-center justify-end gap-3 border-t border-gray-200 pt-3">
+  <button
+    type="button"
+    className="rounded-md bg-[#7A8899] hover:bg-[#6F7C8B] text-white text-sm font-bold px-4 py-1.5 cursor-pointer"
+    onClick={onClose}
+  >
+    Cancel
+  </button>
+  <button
+    type="button"
+    onClick={saveProfile}
+    disabled={saving}
+    className="rounded-md bg-[#C0B7E0] hover:bg-[#BBB3DB] text-[#303030] text-sm font-bold px-4 py-1.5 cursor-pointer disabled:opacity-50"
+  >
+    {saving ? 'Saving…' : 'Save changes'}
+  </button>
+</div>
     </div>
   );
 }
